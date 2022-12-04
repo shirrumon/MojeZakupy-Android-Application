@@ -94,8 +94,8 @@ class TaskListFragment(
         taskViewModel: TaskViewModel?,
         listId: String,
     ) {
+        val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
         view.findViewById<FloatingActionButton>(R.id.add_task_explain_button).setOnClickListener{
-            val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
             if(addTaskForm.visibility == View.GONE) {
                 addTaskForm.visibility = View.VISIBLE
             } else {
@@ -118,6 +118,7 @@ class TaskListFragment(
                     taskName.text.toString(),
                     taskPrice.text.toString()
                 )
+                addTaskForm.visibility = View.GONE
             }
         }
     }

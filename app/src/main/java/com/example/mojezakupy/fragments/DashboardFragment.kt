@@ -27,8 +27,8 @@ class DashboardFragment : Fragment() {
         recyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        val listsFromDb = listViewModel?.getAllInstances()
-        val listAdapterThis = listsFromDb?.let {
+        var listsFromDb: MutableList<TaskListEntity>? = listViewModel?.emptyList
+        var listAdapterThis = listsFromDb?.let {
             activity?.let { it1 ->
                 CustomListAdapter(
                     it,
@@ -37,6 +37,22 @@ class DashboardFragment : Fragment() {
             }
         }
         recyclerView.adapter = listAdapterThis
+
+
+        // HOTFIX - nalezy potem przepisac caly widok by nie duplikowac kodu
+        // to co jest poniezej pobiera dane z bd w osobnym watku
+        listViewModel?.list?.observe(viewLifecycleOwner) {
+            listsFromDb = it
+            listAdapterThis = listsFromDb?.let {
+                activity?.let { it1 ->
+                    CustomListAdapter(
+                        it,
+                        it1
+                    )
+                }
+            }
+            recyclerView.adapter = listAdapterThis
+        }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -67,7 +83,7 @@ class DashboardFragment : Fragment() {
                     ).setAction(
                         "Cofnij",
                         View.OnClickListener {
-                            listsFromDb.add(position, deletedCourse)
+                            listsFromDb?.add(position, deletedCourse)
                             listViewModel?.removeFromArchive(deletedCourse)
                             listAdapterThis?.notifyItemInserted(position)
                         }).show()

@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class ListViewModel(applicationContext: Context) : ViewModel() {
     private val appDatabase: AppDatabase = AppDatabase.getDatabase(applicationContext)
-    val list: LiveData<MutableList<TaskListEntity>> = appDatabase.taskListDAO().getAllAsFLow().asLiveData()
+    val list: LiveData<MutableList<TaskListEntity>> = appDatabase.taskListDAO().getAll()
+    val emptyList: MutableList<TaskListEntity> = arrayListOf()
 
     @OptIn(DelicateCoroutinesApi::class)
     fun saveNewList(listName: String) {
@@ -26,10 +27,6 @@ class ListViewModel(applicationContext: Context) : ViewModel() {
         GlobalScope.launch(Dispatchers.IO) {
             appDatabase.taskListDAO().insert(newListInstance)
         }
-    }
-
-    fun getAllInstances(): MutableList<TaskListEntity> {
-        return appDatabase.taskListDAO().getAll()
     }
 
     @OptIn(DelicateCoroutinesApi::class)

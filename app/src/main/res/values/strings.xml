@@ -3,5 +3,5 @@
     <string name="dashboard">Dashboard</string>
     <string name="add_list">Dodaj listę</string>
     <string name="archiv">Archiwium</string>
-    <string name="add_list_top_input_text">Dodaj nazwę nowej listy zakupów</string>
+    <string name="add_list_top_input_text">Stwórz nową listę zakupów</string>
 </resources>

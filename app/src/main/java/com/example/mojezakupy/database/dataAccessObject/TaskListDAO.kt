@@ -1,5 +1,6 @@
 package com.example.mojezakupy.database.dataAccessObject
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskListDAO {
     @Query("SELECT * FROM task_list WHERE is_in_archive != 1")
-    fun getAll(): MutableList<TaskListEntity>
+    fun getAll(): LiveData<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE is_in_archive = 1")
     fun getAllFromArchive(): MutableList<TaskListEntity>

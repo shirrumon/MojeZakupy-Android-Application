@@ -3,7 +3,7 @@
     <style name="Theme.MojeZakupy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">#38BD4E</item>
         <item name="colorPrimaryVariant">#E6252323</item>
         <item name="colorOnPrimary">#E6252323</item>
 

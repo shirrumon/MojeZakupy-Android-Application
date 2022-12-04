@@ -47,12 +47,12 @@ class TaskListFragment(
 
         if (taskViewModel != null) {
             taskViewModel.allTasksAsFlow.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
+                listsFromDb = taskViewModel.getAllInstances(listId.toInt())
                 recyclerView.adapter = CustomTaskListAdapter(it)
             })
 
             taskViewModel.summaryPrice.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
+                listsFromDb = taskViewModel.getAllInstances(listId.toInt())
                 view.findViewById<TextView>(R.id.task_box_price_summary).text = it
             })
         }

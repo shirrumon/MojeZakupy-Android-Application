@@ -14,9 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/menu"
-        android:background="#252323"
-        app:itemIconTint="#38BD4E"
-        app:itemTextColor="#38BD4E"/>
+        android:background="#252323"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

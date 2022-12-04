@@ -9,4 +9,9 @@
         android:id="@+id/ic_list_add"
         android:icon="@drawable/ic_baseline_dashboard_customize_24"
         android:title="@string/add_list"/>
+
+    <item
+        android:id="@+id/ic_list_archive"
+        android:icon="@drawable/ic_baseline_dashboard_customize_24"
+        android:title="@string/archiv"/>
 </menu>

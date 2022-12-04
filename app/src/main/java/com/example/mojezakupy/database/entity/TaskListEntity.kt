@@ -10,4 +10,5 @@ data class TaskListEntity(
     @ColumnInfo(name = "list_name") val listName: String?,
     @ColumnInfo(name = "task_count") val taskCount: Int = 0,
     @ColumnInfo(name = "task_summary") val taskSummary: String? = "0",
+    @ColumnInfo(name = "is_in_archive") var isInArchive: Boolean = false,
 )

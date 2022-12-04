@@ -2,5 +2,6 @@
     <string name="app_name">MojeZakupy</string>
     <string name="dashboard">Dashboard</string>
     <string name="add_list">Dodaj listę</string>
+    <string name="archiv">Archiwium</string>
     <string name="add_list_top_input_text">Dodaj nazwę nowej listy zakupów</string>
 </resources>

@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import com.example.mojezakupy.database.AppDatabase
 import com.example.mojezakupy.fragments.AddNewListFragment
 import com.example.mojezakupy.fragments.DashboardFragment
+import com.example.mojezakupy.fragments.ListArchiveFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private val dashboardFragment = DashboardFragment()
     private val newListFragment = AddNewListFragment()
+    private val listArchiveFragment = ListArchiveFragment()
     private lateinit var appDatabase: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.ic_dashboard -> replaceFragment(dashboardFragment)
                 R.id.ic_list_add -> replaceFragment(newListFragment)
+                R.id.ic_list_archive -> replaceFragment(listArchiveFragment)
             }
             true
         }

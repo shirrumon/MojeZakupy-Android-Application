@@ -68,4 +68,34 @@ class TaskViewModel(applicationContext: Context, listed: Int) : ViewModel() {
             appDatabase.taskListDAO().update(updatedTaskListEntity)
         }
     }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun updateTaskListAfterTaskDelete(
+        listId: String,
+        taskPrice: Int,
+    ) {
+        val taskList = appDatabase.taskListDAO().funGetListById(listId)
+        val taskSummaryPrice = taskList?.taskSummary?.toInt()?.minus(taskPrice)
+        val updatedTaskListEntity = TaskListEntity(
+            taskList?.id,
+            taskList?.listName,
+            taskList?.taskCount?.minus(1) ?: 1,
+            taskSummaryPrice.toString()
+        )
+
+        GlobalScope.launch(Dispatchers.IO) {
+            appDatabase.taskListDAO().update(updatedTaskListEntity)
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun delete(task: TaskEntity) {
+        this.updateTaskListAfterTaskDelete(
+            task.listId.toString(),
+            task.taskPrice.toInt(),
+        )
+        GlobalScope.launch(Dispatchers.IO) {
+            appDatabase.tasksDAO().delete(task)
+        }
+    }
 }

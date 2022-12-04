@@ -11,8 +11,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskListDAO {
-    @Query("SELECT * FROM task_list")
-    fun getAll(): List<TaskListEntity>
+    @Query("SELECT * FROM task_list WHERE is_in_archive != 1")
+    fun getAll(): MutableList<TaskListEntity>
+
+    @Query("SELECT * FROM task_list WHERE is_in_archive = 1")
+    fun getAllFromArchive(): MutableList<TaskListEntity>
+
+    @Query("SELECT * FROM task_list WHERE is_in_archive != 1")
+    fun getAllAsFLow(): Flow<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE id = :id")
     fun funGetListById(id: String): TaskListEntity?

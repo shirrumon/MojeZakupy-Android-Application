@@ -12,10 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class TaskViewModel(applicationContext: Context, listed: Int) : ViewModel() {
+class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
     private val appDatabase: AppDatabase = AppDatabase.getDatabase(applicationContext)
-    val allTasksAsFlow: LiveData<List<TaskEntity>> = appDatabase.tasksDAO().getAllByListIdAsFlow(listed).asLiveData()
-    val summaryPrice: LiveData<String> = appDatabase.taskListDAO().getSummaryPriceAsFlow(listed).asLiveData()
+    val taskList: LiveData<MutableList<TaskEntity>> = appDatabase.tasksDAO().getAllByListId(listId)
+    val summaryPrice: LiveData<String> = appDatabase.taskListDAO().getSummaryPriceAsFlow(listId).asLiveData()
 
     @OptIn(DelicateCoroutinesApi::class)
     fun createTask(
@@ -39,10 +39,6 @@ class TaskViewModel(applicationContext: Context, listed: Int) : ViewModel() {
         }
     }
 
-    fun getAllInstances(listId: Int): List<TaskEntity> {
-        return appDatabase.tasksDAO().getAllByListId(listId)
-    }
-
     @OptIn(DelicateCoroutinesApi::class)
     fun deleteTask(task: TaskEntity) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -55,12 +51,12 @@ class TaskViewModel(applicationContext: Context, listed: Int) : ViewModel() {
         listId: String,
         taskPrice: Int,
     ) {
-        val taskList = appDatabase.taskListDAO().funGetListById(listId)
-        val taskSummaryPrice = taskList?.taskSummary?.toInt()?.plus(taskPrice)
+        val taskList = appDatabase.taskListDAO().getListById(listId)
+        val taskSummaryPrice = taskList.taskSummary?.toInt()?.plus(taskPrice)
         val updatedTaskListEntity = TaskListEntity(
-            taskList?.id,
-            taskList?.listName,
-            taskList?.taskCount?.plus(1) ?: 1,
+            taskList.id,
+            taskList.listName,
+            taskList.taskCount.plus(1),
             taskSummaryPrice.toString()
         )
 
@@ -74,16 +70,15 @@ class TaskViewModel(applicationContext: Context, listed: Int) : ViewModel() {
         listId: String,
         taskPrice: Int,
     ) {
-        val taskList = appDatabase.taskListDAO().funGetListById(listId)
-        val taskSummaryPrice = taskList?.taskSummary?.toInt()?.minus(taskPrice)
-        val updatedTaskListEntity = TaskListEntity(
-            taskList?.id,
-            taskList?.listName,
-            taskList?.taskCount?.minus(1) ?: 1,
-            taskSummaryPrice.toString()
-        )
-
         GlobalScope.launch(Dispatchers.IO) {
+            val taskList = appDatabase.taskListDAO().getListById(listId)
+            val taskSummaryPrice = taskList.taskSummary?.toInt()?.minus(taskPrice)
+            val updatedTaskListEntity = TaskListEntity(
+                taskList.id,
+                taskList.listName,
+                taskList.taskCount.minus(1),
+                taskSummaryPrice.toString()
+            )
             appDatabase.taskListDAO().update(updatedTaskListEntity)
         }
     }

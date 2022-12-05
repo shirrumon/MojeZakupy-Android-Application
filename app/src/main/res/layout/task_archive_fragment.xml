@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,71 +40,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cena razem: "
-            android:textColor="@color/white"></TextView>
+            android:text="@string/full_price_in_task_label"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/task_box_price_summary_archive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20"
-            android:textColor="@color/white"></TextView>
+            android:text="@string/example_list_price"
+            android:textColor="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" zł"
-            android:textColor="@color/white"></TextView>
+            android:text="@string/zloty_value"
+            android:textColor="@color/white" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/task_create_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#E6252323"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="30dp"
-        android:visibility="gone"
-        >
-
-        <EditText
-            android:id="@+id/add_new_task_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:text="Nazwa produktu"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/task_create_wrapper"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintVertical_bias="0.071" />
-
-        <EditText
-            android:id="@+id/add_new_task_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:text="0"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/add_new_task_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintVertical_bias="0.071" />
-
-        <Button
-            android:id="@+id/create_new_task_button_in_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/add_new_task_price"
-            android:text="Dodaj"
-            android:textColor="@color/white"
-            android:layout_marginTop="15dp"
-            app:layout_constraintVertical_bias="0.0" />
-
-    </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

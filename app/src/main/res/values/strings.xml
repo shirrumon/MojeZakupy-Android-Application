@@ -1,7 +1,21 @@
 <resources>
     <string name="app_name">MojeZakupy</string>
-    <string name="dashboard">Dashboard</string>
+    <string name="dashboard">Lista zakupów</string>
     <string name="add_list">Dodaj listę</string>
-    <string name="archiv">Archiwium</string>
+    <string name="new_list_placeholder">Nowa lista</string>
+    <string name="archive">Archiwium</string>
     <string name="add_list_top_input_text">Stwórz nową listę zakupów</string>
+    <string name="new_task_product_name">Nazwa produktu</string>
+    <string name="new_task_product_price">Cena produktu</string>
+    <string name="add_new_task_button_text">Dodaj</string>
+    <string name="full_price_in_task_label">Cena razem:</string>
+    <string name="zloty_value">zł</string>
+    <string name="add_button">Dodaj</string>
+    <string name="example_list_name">Testowa nazwa listy</string>
+    <string name="example_task_count">13 taskow</string>
+    <string name="list_elem_full_price">Cena razem:</string>
+    <string name="example_list_price">20</string>
+    <string name="example_list_id">id</string>
+    <string name="example_task_name">Testowa nazwa taska</string>
+    <string name="example_price">13 zł</string>
 </resources>

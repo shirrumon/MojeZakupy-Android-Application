@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class ListViewModel(applicationContext: Context) : ViewModel() {
     private val appDatabase: AppDatabase = AppDatabase.getDatabase(applicationContext)
     val list: LiveData<MutableList<TaskListEntity>> = appDatabase.taskListDAO().getAll()
-    val emptyList: MutableList<TaskListEntity> = arrayListOf()
+    val archiveList: LiveData<MutableList<TaskListEntity>> = appDatabase.taskListDAO().getArchiveList()
 
     @OptIn(DelicateCoroutinesApi::class)
     fun saveNewList(listName: String) {
@@ -30,22 +30,25 @@ class ListViewModel(applicationContext: Context) : ViewModel() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun moveToArchive(taskEntity: TaskListEntity) {
-        taskEntity.isInArchive = true
+    fun moveToArchive(taskListEntity: TaskListEntity) {
+        taskListEntity.isInArchive = true
         GlobalScope.launch(Dispatchers.IO) {
-            appDatabase.taskListDAO().update(taskEntity)
+            appDatabase.taskListDAO().update(taskListEntity)
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun removeFromArchive(taskEntity: TaskListEntity) {
-        taskEntity.isInArchive = false
+    fun removeFromArchive(taskListEntity: TaskListEntity) {
+        taskListEntity.isInArchive = false
         GlobalScope.launch(Dispatchers.IO) {
-            appDatabase.taskListDAO().update(taskEntity)
+            appDatabase.taskListDAO().update(taskListEntity)
         }
     }
 
-    fun getAllFromArchive(): MutableList<TaskListEntity> {
-        return appDatabase.taskListDAO().getAllFromArchive()
+    @OptIn(DelicateCoroutinesApi::class)
+    fun delete(taskListEntity: TaskListEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
+            appDatabase.taskListDAO().delete(taskListEntity)
+        }
     }
 }

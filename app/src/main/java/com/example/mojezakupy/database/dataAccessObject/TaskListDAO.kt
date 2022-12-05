@@ -16,13 +16,10 @@ interface TaskListDAO {
     fun getAll(): LiveData<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE is_in_archive = 1")
-    fun getAllFromArchive(): MutableList<TaskListEntity>
-
-    @Query("SELECT * FROM task_list WHERE is_in_archive != 1")
-    fun getAllAsFLow(): Flow<MutableList<TaskListEntity>>
+    fun getArchiveList(): LiveData<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE id = :id")
-    fun funGetListById(id: String): TaskListEntity?
+    fun getListById(id: String): TaskListEntity
 
     @Query("SELECT task_summary FROM task_list WHERE id = :listId")
     fun getSummaryPriceAsFlow(listId: Int): Flow<String>

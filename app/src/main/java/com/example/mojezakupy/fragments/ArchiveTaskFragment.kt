@@ -38,24 +38,30 @@ class ArchiveTaskFragment(
 
         view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = tasksSummary
 
-        var listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-        val currentAdapter = listsFromDb?.let { CustomTaskListAdapter(it) }
+        var listFromDb: MutableList<TaskEntity> = arrayListOf()
+        var currentAdapter = CustomTaskListAdapter(listFromDb)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler_archive)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = currentAdapter
 
-        if (taskViewModel != null) {
-            taskViewModel.allTasksAsFlow.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-                recyclerView.adapter = CustomTaskListAdapter(it)
-            })
-
-            taskViewModel.summaryPrice.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-                view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = it
-            })
+        taskViewModel?.taskList?.observe(viewLifecycleOwner) {
+            listFromDb = it
+            currentAdapter = CustomTaskListAdapter(listFromDb)
+            recyclerView.adapter = currentAdapter
         }
+
+//        if (taskViewModel != null) {
+//            taskViewModel.allTasksAsFlow.observe(viewLifecycleOwner, Observer {
+//                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
+//                recyclerView.adapter = CustomTaskListAdapter(it)
+//            })
+//
+//            taskViewModel.summaryPrice.observe(viewLifecycleOwner, Observer {
+//                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
+//                view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = it
+//            })
+//        }
 
 //        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 //            override fun onMove(

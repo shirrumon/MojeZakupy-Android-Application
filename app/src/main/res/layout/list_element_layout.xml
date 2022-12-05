@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shadow_rect"
     android:gravity="center_vertical"
     android:padding="10dp"
@@ -14,8 +13,8 @@
         android:id="@+id/task_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Testowa nazwa listy"
-        android:textSize="18dp"
+        android:text="@string/example_list_name"
+        android:textSize="18sp"
         android:textColor="@color/white"/>
 
     <LinearLayout
@@ -27,7 +26,7 @@
             android:id="@+id/task_list_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="13 taskow"
+            android:text="@string/example_task_count"
             android:textColor="@color/green" />
 
         <LinearLayout
@@ -36,20 +35,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cena razem: "
+                android:text="@string/list_elem_full_price"
                 android:textColor="@color/green"/>
 
             <TextView
                 android:id="@+id/task_list_summary_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20"
+                android:text="@string/example_list_price"
                 android:textColor="@color/green"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" zł"
+                android:text="@string/zloty_value"
                 android:textColor="@color/green"/>
         </LinearLayout>
     </LinearLayout>
@@ -58,7 +57,7 @@
         android:id="@+id/task_list_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="id"
+        android:text="@string/example_list_id"
         android:textColor="@color/green"
         android:visibility="gone"/>
 

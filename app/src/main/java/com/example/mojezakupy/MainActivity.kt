@@ -4,15 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.mojezakupy.database.AppDatabase
-import com.example.mojezakupy.fragments.AddNewListFragment
-import com.example.mojezakupy.fragments.DashboardFragment
-import com.example.mojezakupy.fragments.ListArchiveFragment
+import com.example.mojezakupy.fragments.ListFragment
+import com.example.mojezakupy.fragments.ArchiveListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    private val dashboardFragment = DashboardFragment()
-    private val newListFragment = AddNewListFragment()
-    private val listArchiveFragment = ListArchiveFragment()
+    private val listFragment = ListFragment()
+    private val archiveListFragment = ArchiveListFragment()
     private lateinit var appDatabase: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,13 +18,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         appDatabase = AppDatabase.getDatabase(this)
 
-        replaceFragment(dashboardFragment)
+        replaceFragment(listFragment)
 
         findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.ic_dashboard -> replaceFragment(dashboardFragment)
-                R.id.ic_list_add -> replaceFragment(newListFragment)
-                R.id.ic_list_archive -> replaceFragment(listArchiveFragment)
+                R.id.ic_dashboard -> replaceFragment(listFragment)
+                R.id.ic_list_archive -> replaceFragment(archiveListFragment)
             }
             true
         }

@@ -2,35 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shadow_rect"
     android:gravity="center_vertical"
     android:padding="10dp"
     android:orientation="vertical"
-    android:layout_margin="5dp"
-
-    >
+    android:layout_margin="5dp">
 
     <TextView
         android:id="@+id/task_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Testowa nazwa taska"
-        android:textSize="18dp"
+        android:text="@string/example_task_name"
+        android:textSize="18sp"
         android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/task_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="13 zł"
+        android:text="@string/example_price"
         android:textColor="@color/green"/>
 
     <TextView
         android:id="@+id/task_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="id_task"
+        android:text="@string/example_list_id"
         android:textColor="@color/green"
         android:visibility="gone"/>
 

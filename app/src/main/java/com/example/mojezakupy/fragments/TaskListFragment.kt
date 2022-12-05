@@ -1,16 +1,12 @@
 package com.example.mojezakupy.fragments
 
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
-import com.example.mojezakupy.database.entity.TaskListEntity
+import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class TaskListFragment(
@@ -33,28 +28,26 @@ class TaskListFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_task_list, container, false)
         val taskViewModel: TaskViewModel? = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }
 
         view.findViewById<TextView>(R.id.task_box_price_summary).text = tasksSummary
 
-        var listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-        val currentAdapter = listsFromDb?.let { CustomTaskListAdapter(it) }
+        var listFromDb: MutableList<TaskEntity> = arrayListOf()
+        var currentAdapter = CustomTaskListAdapter(listFromDb)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = currentAdapter
 
-        if (taskViewModel != null) {
-            taskViewModel.allTasksAsFlow.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel.getAllInstances(listId.toInt())
-                recyclerView.adapter = CustomTaskListAdapter(it)
-            })
+        taskViewModel?.taskList?.observe(viewLifecycleOwner) {
+            listFromDb = it
+            currentAdapter = CustomTaskListAdapter(listFromDb)
+            recyclerView.adapter = currentAdapter
+        }
 
-            taskViewModel.summaryPrice.observe(viewLifecycleOwner, Observer {
-                listsFromDb = taskViewModel.getAllInstances(listId.toInt())
-                view.findViewById<TextView>(R.id.task_box_price_summary).text = it
-            })
+        taskViewModel?.summaryPrice?.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.task_box_price_summary).text = it
         }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -67,20 +60,19 @@ class TaskListFragment(
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedCourse: TaskEntity? =
-                    listsFromDb?.get(viewHolder.adapterPosition)
+                val deletedCourse: TaskEntity =
+                    listFromDb.get(viewHolder.adapterPosition)
 
-                listsFromDb?.get(viewHolder.adapterPosition)?.let { taskViewModel?.delete(it) }
+                taskViewModel?.delete(listFromDb.get(viewHolder.adapterPosition))
 
-                currentAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
+                currentAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
-                if (deletedCourse != null) {
-                    Snackbar.make(
-                        recyclerView,
-                        "Usunąłeś " + deletedCourse.taskName,
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+                SnakeBarFactory().generateSnakeBar(
+                    recyclerView,
+                    "Usunąłeś",
+                    deletedCourse.taskName,
+                    Gravity.TOP,
+                ).show()
             }
         }).attachToRecyclerView(recyclerView)
 

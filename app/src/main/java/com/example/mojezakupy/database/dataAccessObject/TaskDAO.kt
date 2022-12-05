@@ -1,5 +1,6 @@
 package com.example.mojezakupy.database.dataAccessObject
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,10 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDAO {
     @Query("SELECT * FROM tasks WHERE list_id = :listId")
-    fun getAllByListId(listId: Int): List<TaskEntity>
-
-    @Query("SELECT * FROM tasks WHERE list_id = :listId")
-    fun getAllByListIdAsFlow(listId: Int): Flow<List<TaskEntity>>
+    fun getAllByListId(listId: Int): LiveData<MutableList<TaskEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: TaskEntity)

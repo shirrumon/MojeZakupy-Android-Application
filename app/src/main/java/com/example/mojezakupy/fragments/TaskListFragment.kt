@@ -41,17 +41,28 @@ class TaskListFragment(
 
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = currentAdapter
 
         taskViewModel?.taskList?.observe(viewLifecycleOwner) {
             listFromDb = it
             currentAdapter = CustomTaskListAdapter(listFromDb)
+            recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             recyclerView.adapter = currentAdapter
         }
 
-        taskViewModel?.summaryPrice?.observe(viewLifecycleOwner){
-            view.findViewById<TextView>(R.id.task_box_price_summary).text = it
+        taskViewModel?.countType?.observe(viewLifecycleOwner) {
+            if(it == "standard") {
+                taskViewModel.summaryPrice.observe(viewLifecycleOwner){ price ->
+                    view.findViewById<TextView>(R.id.task_list_salary).text = "Cena razem: "
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = price
+                }
+            } else {
+                taskViewModel.salary.observe(viewLifecycleOwner){ salary ->
+                    view.findViewById<TextView>(R.id.task_list_salary).text = "Pozostało wypłaty: "
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = salary.toString()
+                }
+            }
         }
+
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -64,9 +75,9 @@ class TaskListFragment(
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val deletedCourse: TaskEntity =
-                    listFromDb.get(viewHolder.adapterPosition)
+                    listFromDb[viewHolder.adapterPosition]
 
-                taskViewModel?.delete(listFromDb.get(viewHolder.adapterPosition))
+                taskViewModel?.delete(listFromDb[viewHolder.adapterPosition])
 
                 currentAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
@@ -150,6 +161,24 @@ class TaskListFragment(
                 )
                 addTaskForm.visibility = View.GONE
             }
+        }
+
+        view.findViewById<TextView>(R.id.task_list_salary).setOnClickListener {
+            if (view.findViewById<TextView>(R.id.task_list_salary).text.toString() == "Cena razem: ") {
+                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.VISIBLE
+                taskViewModel?.changeCountType(listId, "price")
+            } else {
+                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
+                taskViewModel?.changeCountType(listId, "standard")
+            }
+        }
+
+        view.findViewById<Button>(R.id.change_price_button).setOnClickListener {
+            taskViewModel?.changeSalary(listId, view.findViewById<EditText>(R.id.change_price_input).text.toString())
+        }
+
+        view.findViewById<Button>(R.id.close_salary_change_icon).setOnClickListener {
+            view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
         }
     }
 }

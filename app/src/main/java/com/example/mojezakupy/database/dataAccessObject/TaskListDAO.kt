@@ -24,6 +24,12 @@ interface TaskListDAO {
     @Query("SELECT task_summary FROM task_list WHERE id = :listId")
     fun getSummaryPriceAsFlow(listId: Int): Flow<String>
 
+    @Query("SELECT count_type FROM task_list WHERE id = :listId")
+    fun getCurrentType(listId: Int): Flow<String>
+
+    @Query("SELECT salary FROM task_list WHERE id = :listId")
+    fun getSalary(listId: Int): Flow<Int>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: TaskListEntity)
 

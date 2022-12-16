@@ -6,9 +6,11 @@
     <string name="archive">Archiwium</string>
     <string name="add_list_top_input_text">Stwórz nową listę zakupów</string>
     <string name="new_task_product_name">Nazwa produktu</string>
+    <string name="task_salary">Wypłata do wylicznia</string>
     <string name="new_task_product_price">Cena produktu</string>
     <string name="add_new_task_button_text">Dodaj</string>
-    <string name="full_price_in_task_label">Cena razem:</string>
+    <string name="close">Zamknij</string>
+    <string name="full_price_in_task_label">Cena razem: </string>
     <string name="zloty_value">zł</string>
     <string name="add_button">Dodaj</string>
     <string name="example_list_name">Testowa nazwa listy</string>

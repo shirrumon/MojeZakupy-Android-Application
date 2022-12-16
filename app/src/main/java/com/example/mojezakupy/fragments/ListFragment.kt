@@ -1,5 +1,6 @@
 package com.example.mojezakupy.fragments
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,24 +10,26 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
-import com.example.mojezakupy.viewmodel.ListViewModel
 import com.example.mojezakupy.adapters.CustomListAdapter
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
+import com.example.mojezakupy.viewmodel.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 
 class ListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         val listViewModel = activity?.let { ListViewModel(it.applicationContext) }
 
@@ -100,6 +103,41 @@ class ListFragment : Fragment() {
                     listViewModel?.removeFromArchive(deletedCourse)
                     listAdapterThis?.notifyItemInserted(position)
                 }.show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                activity?.let {
+                    ContextCompat.getColor(
+                        it.applicationContext,
+                        R.color.archive_swipe_background
+                    )
+                }?.let {
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(
+                            it
+                        )
+                        .addActionIcon(R.drawable.ic_baseline_archive_32)
+                        .addCornerRadius(1, 15)
+                        .create()
+                        .decorate()
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }).attachToRecyclerView(recyclerView)
 

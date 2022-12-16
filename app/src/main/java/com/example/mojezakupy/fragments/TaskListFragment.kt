@@ -1,11 +1,13 @@
 package com.example.mojezakupy.fragments
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,6 +19,7 @@ import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 
 class TaskListFragment(
@@ -73,6 +76,41 @@ class TaskListFragment(
                     deletedCourse.taskName,
                     Gravity.TOP,
                 ).show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                activity?.let {
+                    ContextCompat.getColor(
+                        it.applicationContext,
+                        R.color.delete_swipe_background
+                    )
+                }?.let {
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(
+                            it
+                        )
+                        .addActionIcon(R.drawable.ic_baseline_delete_32)
+                        .addCornerRadius(1, 15)
+                        .create()
+                        .decorate()
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }).attachToRecyclerView(recyclerView)
 

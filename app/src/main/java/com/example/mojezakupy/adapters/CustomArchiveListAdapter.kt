@@ -15,14 +15,12 @@ class CustomArchiveListAdapter(private val dataSet: List<TaskListEntity>, privat
     RecyclerView.Adapter<CustomArchiveListAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView
-        val taskCount: TextView
+        val taskCreateDate: TextView
         val hiddenId: TextView
-        val summaryPrice: TextView
 
         init {
             textView = view.findViewById(R.id.task_list_name)
-            taskCount = view.findViewById(R.id.task_list_count)
-            summaryPrice = view.findViewById(R.id.task_list_summary_price)
+            taskCreateDate = view.findViewById(R.id.list_date_of_create)
             hiddenId = view.findViewById(R.id.task_list_id)
         }
     }
@@ -33,9 +31,8 @@ class CustomArchiveListAdapter(private val dataSet: List<TaskListEntity>, privat
 
         view.setOnClickListener{
             val listId = it.findViewById<TextView>(R.id.task_list_id).text.toString()
-            val tasksSummary = it.findViewById<TextView>(R.id.task_list_summary_price).text.toString()
 
-            val taskListFragment = ArchiveTaskFragment(listId, tasksSummary)
+            val taskListFragment = ArchiveTaskFragment(listId, "30") //hotfix
             activity.supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, taskListFragment)
@@ -47,8 +44,7 @@ class CustomArchiveListAdapter(private val dataSet: List<TaskListEntity>, privat
     }
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.textView.text = dataSet[position].listName
-        viewHolder.taskCount.text = dataSet[position].taskCount.toString() + " tasków"
-        viewHolder.summaryPrice.text = dataSet[position].taskSummary
+        viewHolder.taskCreateDate.text = dataSet[position].createDate
         viewHolder.hiddenId.text = dataSet[position].id.toString()
     }
     override fun getItemCount() = dataSet.size

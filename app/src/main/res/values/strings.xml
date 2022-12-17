@@ -22,4 +22,12 @@
     <string name="example_list_id">id</string>
     <string name="example_task_name">Testowa nazwa taska</string>
     <string name="example_price">13 zł</string>
+    <string name="header_list_of_products">Lista zakupów</string>
+    <string name="cancel">Wstecz</string>
+    <string name="decline">Odmów</string>
+    <string name="accept">Gotowe</string>
+    <string name="create_list_header_dialog">Utwórz listę</string>
+    <string name="list_name_hint">Nazwa listy</string>
+    <string name="error_empty_input">Pole nie może być puste</string>
+    <string name="header_list_of_archive">Archiwum</string>
 </resources>

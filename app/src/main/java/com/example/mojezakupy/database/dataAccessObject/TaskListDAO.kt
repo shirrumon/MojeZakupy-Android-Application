@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskListDAO {
-    @Query("SELECT * FROM task_list WHERE is_in_archive != 1")
+    @Query("SELECT * FROM task_list WHERE is_in_archive != 1 ORDER BY id DESC")
     fun getAll(): LiveData<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE is_in_archive = 1")

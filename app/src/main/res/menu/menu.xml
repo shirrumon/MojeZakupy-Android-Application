@@ -2,25 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/ic_dashboard"
-        android:icon="@drawable/ic_outline_circle_24"
+        android:icon="@drawable/ic_outline_circle_14"
         android:enabled="true"
-        android:title="@string/dashboard"/>
+        android:title="@string/dashboard"
+        android:fontFamily="@font/roboto_medium"/>
 
     <item
         android:id="@+id/ic_list_archive"
-        android:icon="@drawable/ic_outline_crop_square_24"
+        android:icon="@drawable/ic_baseline_crop_square_14"
         android:enabled="true"
-        android:title="@string/archive"/>
+        android:title="@string/archive"
+        android:fontFamily="@font/roboto_medium"/>
 
     <item
         android:id="@+id/ic_list_infographics"
-        android:icon="@drawable/ic_outline_pentagon_24"
+        android:icon="@drawable/ic_outline_pentagon_14"
         android:enabled="false"
-        android:title="@string/infographics"/>
+        android:title="@string/infographics"
+        android:fontFamily="@font/roboto_medium"/>
 
     <item
         android:id="@+id/ic_setting_page"
-        android:icon="@drawable/ic_outline_settings_24"
+        android:icon="@drawable/ic_outline_settings_14"
         android:enabled="false"
-        android:title="@string/app_settings"/>
+        android:title="@string/app_settings"
+        android:fontFamily="@font/roboto_medium"/>
 </menu>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?attr/materialCardViewElevatedStyle"
+    style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginLeft="18dp"
+    android:layout_marginRight="18dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -17,39 +20,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/example_list_name"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/task_list_count"
+            android:id="@+id/list_date_of_create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/example_task_count"
-            android:textColor="@color/green" />
+            android:text="@string/list_elem_full_price"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto_regular"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/list_elem_full_price"
-                android:textColor="@color/green" />
-
-            <TextView
-                android:id="@+id/task_list_summary_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/example_list_price"
-                android:textColor="@color/green" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/zloty_value"
-                android:textColor="@color/green" />
-        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -57,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/example_list_id"
-        android:textColor="@color/green"
         android:visibility="gone" />
 
 </com.google.android.material.card.MaterialCardView>

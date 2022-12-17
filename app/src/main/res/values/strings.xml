@@ -4,6 +4,8 @@
     <string name="add_list">Dodaj listę</string>
     <string name="new_list_placeholder">Nowa lista</string>
     <string name="archive">Archiwium</string>
+    <string name="infographics">Wykres</string>
+    <string name="app_settings">Ustawienia</string>
     <string name="add_list_top_input_text">Stwórz nową listę zakupów</string>
     <string name="new_task_product_name">Nazwa produktu</string>
     <string name="task_salary">Wypłata do wylicznia</string>

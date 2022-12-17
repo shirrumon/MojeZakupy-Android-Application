@@ -4,27 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ListFragment"
-    android:background="#E6252323">
+    tools:context=".fragments.ListFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_list_explain_button"
-        android:layout_width="74dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="668dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="7dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="45dp"
+        android:layout_marginEnd="18dp"
         android:contentDescription="@string/add_list"
-        android:padding="1dp"
-        android:src="@drawable/ic_baseline_add_task"
-        app:backgroundTint="#252323"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:tint="@color/green" />
+        app:srcCompat="@drawable/ic_outline_edit_24"
+        app:fabCustomSize="56dp"
+        style="?attr/floatingActionButtonSurfaceStyle"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dashboard_recycler"
@@ -34,10 +32,10 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.003" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
         android:id="@+id/create_new_list_form"

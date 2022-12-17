@@ -2,11 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/ic_dashboard"
-        android:icon="@drawable/ic_baseline_dashboard_24"
+        android:icon="@drawable/ic_outline_circle_24"
+        android:enabled="true"
         android:title="@string/dashboard"/>
 
     <item
         android:id="@+id/ic_list_archive"
-        android:icon="@drawable/ic_baseline_dashboard_customize_24"
+        android:icon="@drawable/ic_outline_crop_square_24"
+        android:enabled="true"
         android:title="@string/archive"/>
+
+    <item
+        android:id="@+id/ic_list_infographics"
+        android:icon="@drawable/ic_outline_pentagon_24"
+        android:enabled="false"
+        android:title="@string/infographics"/>
+
+    <item
+        android:id="@+id/ic_setting_page"
+        android:icon="@drawable/ic_outline_settings_24"
+        android:enabled="false"
+        android:title="@string/app_settings"/>
 </menu>

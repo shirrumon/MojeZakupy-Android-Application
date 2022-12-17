@@ -10,4 +10,5 @@
     <color name="green">#38BD4E</color>
     <color name="archive_swipe_background">#5D95E8</color>
     <color name="delete_swipe_background">#DA0F0F</color>
+    <color name="fragment_background_primary_day">#FFFFFF</color>
 </resources>

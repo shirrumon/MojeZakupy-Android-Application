@@ -20,6 +20,7 @@ import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.viewmodel.TaskViewModel
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class ArchiveTaskFragment(
         val view = inflater.inflate(R.layout.task_archive_fragment, container, false)
         val taskViewModel: TaskViewModel? = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }
 
-        view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = tasksSummary
+        view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = "Razem: $tasksSummary zł"
 
         var listFromDb: MutableList<TaskEntity> = arrayListOf()
         var currentAdapter = CustomTaskListAdapter(listFromDb)
@@ -49,6 +50,15 @@ class ArchiveTaskFragment(
             listFromDb = it
             currentAdapter = CustomTaskListAdapter(listFromDb)
             recyclerView.adapter = currentAdapter
+        }
+
+        val topBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
+        topBar.setOnClickListener{
+            fragmentManager?.popBackStack()
+        }
+
+        taskViewModel?.parentList?.observe(viewLifecycleOwner) {
+            view.findViewById<TextView>(R.id.parent_list_name).text = it.listName
         }
 
 //        if (taskViewModel != null) {

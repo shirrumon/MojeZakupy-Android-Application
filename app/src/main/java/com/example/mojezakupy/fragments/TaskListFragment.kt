@@ -1,5 +1,6 @@
 package com.example.mojezakupy.fragments
 
+import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.Gravity
@@ -18,7 +19,11 @@ import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.TaskViewModel
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 
@@ -34,7 +39,7 @@ class TaskListFragment(
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
         val taskViewModel: TaskViewModel? = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }
 
-        view.findViewById<TextView>(R.id.task_box_price_summary).text = tasksSummary
+        view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $tasksSummary zł"
 
         var listFromDb: MutableList<TaskEntity> = arrayListOf()
         var currentAdapter = CustomTaskListAdapter(listFromDb)
@@ -52,13 +57,13 @@ class TaskListFragment(
         taskViewModel?.countType?.observe(viewLifecycleOwner) {
             if(it == "standard") {
                 taskViewModel.summaryPrice.observe(viewLifecycleOwner){ price ->
-                    view.findViewById<TextView>(R.id.task_list_salary).text = "Cena razem: "
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = price
+                    //view.findViewById<TextView>(R.id.task_list_salary).text = "Cena razem: "
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $price zł"
                 }
             } else {
                 taskViewModel.salary.observe(viewLifecycleOwner){ salary ->
-                    view.findViewById<TextView>(R.id.task_list_salary).text = "Pozostało wypłaty: "
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = salary.toString()
+                    //view.findViewById<TextView>(R.id.task_list_salary).text = "Pozostało wypłaty: "
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Pozostało: $salary zł"
                 }
             }
         }
@@ -125,6 +130,48 @@ class TaskListFragment(
             }
         }).attachToRecyclerView(recyclerView)
 
+        val topBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
+        topBar.setOnClickListener{
+            fragmentManager?.popBackStack()
+        }
+
+        taskViewModel?.parentList?.observe(viewLifecycleOwner) {
+            view.findViewById<TextView>(R.id.parent_list_name).text = it.listName
+        }
+
+        view.findViewById<FloatingActionButton>(R.id.add_task_explain_button).setOnClickListener {
+            context?.let { it1 ->
+                val viewOfInput = inflater.inflate(R.layout.add_product_input_group, null)
+                val dialog = MaterialAlertDialogBuilder(it1)
+                    .setTitle(resources.getString(R.string.create_product_header))
+                    .setView(viewOfInput)
+                    .setNegativeButton(resources.getString(R.string.decline), null)
+                    .setPositiveButton(resources.getString(R.string.accept), null)
+                    .create()
+
+                dialog.show()
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                    val inputProductNameWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
+                    val inputProductName = viewOfInput.findViewById<TextInputEditText>(R.id.product_new_name)
+
+                    val inputProductPriceWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_price_wrapper)
+                    val inputProductPrice = viewOfInput.findViewById<TextInputEditText>(R.id.product_price)
+
+                    if(inputProductName.text.toString().isEmpty()){
+                        inputProductNameWrapper.error = getString(R.string.error_empty_input)
+                    } else if (inputProductPrice.text.toString().isEmpty()){
+                        inputProductPriceWrapper.error = getString(R.string.error_empty_input)
+                    } else {
+                        taskViewModel?.createTask(
+                            listId.toInt(),
+                            inputProductName.text.toString(),
+                            inputProductPrice.text.toString()
+                        )
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
 
         this.setListeners(view, taskViewModel, listId)
         return view
@@ -136,13 +183,7 @@ class TaskListFragment(
         listId: String,
     ) {
         val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
-        view.findViewById<FloatingActionButton>(R.id.add_task_explain_button).setOnClickListener{
-            if(addTaskForm.visibility == View.GONE) {
-                addTaskForm.visibility = View.VISIBLE
-            } else {
-                addTaskForm.visibility = View.GONE
-            }
-        }
+
 
         view.findViewById<Button>(R.id.create_new_task_button_in_form).setOnClickListener {
             val taskName: TextView = view.findViewById(R.id.add_new_task_name)
@@ -163,15 +204,15 @@ class TaskListFragment(
             }
         }
 
-        view.findViewById<TextView>(R.id.task_list_salary).setOnClickListener {
-            if (view.findViewById<TextView>(R.id.task_list_salary).text.toString() == "Cena razem: ") {
-                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.VISIBLE
-                taskViewModel?.changeCountType(listId, "price")
-            } else {
-                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
-                taskViewModel?.changeCountType(listId, "standard")
-            }
-        }
+//        view.findViewById<TextView>(R.id.task_list_salary).setOnClickListener {
+//            if (view.findViewById<TextView>(R.id.task_list_salary).text.toString() == "Cena razem: ") {
+//                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.VISIBLE
+//                taskViewModel?.changeCountType(listId, "price")
+//            } else {
+//                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
+//                taskViewModel?.changeCountType(listId, "standard")
+//            }
+//        }
 
         view.findViewById<Button>(R.id.change_price_button).setOnClickListener {
             taskViewModel?.changeSalary(listId, view.findViewById<EditText>(R.id.change_price_input).text.toString())

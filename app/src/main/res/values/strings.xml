@@ -30,4 +30,9 @@
     <string name="list_name_hint">Nazwa listy</string>
     <string name="error_empty_input">Pole nie może być puste</string>
     <string name="header_list_of_archive">Archiwum</string>
+    <string name="from_salary">Wyliczenie z wypłaty</string>
+    <string name="set_salary">Ustaw wypłate</string>
+    <string name="create_product_header">Dodaj produkt</string>
+    <string name="product_name_label">Nazwa produktu</string>
+    <string name="product_price_label">Cena produktu</string>
 </resources>

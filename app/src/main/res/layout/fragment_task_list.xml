@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#E6252323">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/top_app_bar"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:navigationIconTint="@color/black"></com.google.android.material.appbar.MaterialToolbar>
+
+        <TextView
+            android:id="@+id/parent_list_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/roboto_regular"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/task_recycler"
@@ -15,68 +40,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.005" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.052" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_task_explain_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="347dp"
-        android:layout_marginEnd="355dp"
-        android:layout_marginBottom="667dp"
-        android:contentDescription="@string/app_name"
-        android:padding="1dp"
-        android:src="@drawable/ic_baseline_add_task"
-        app:backgroundTint="#252323"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="18dp"
+        android:contentDescription="@string/add_list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:tint="@color/green" />
+        app:srcCompat="@drawable/ic_outline_edit_24"
+        app:fabCustomSize="62dp"
+        style="?attr/floatingActionButtonSurfaceStyle"/>
 
-    <LinearLayout
+    <com.google.android.material.chip.Chip
+        android:id="@+id/task_box_price_summary"
+        style="@style/Widget.Material3.Chip.Suggestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="347dp"
-        android:layout_marginEnd="355dp"
-        android:layout_marginBottom="667dp"
-        android:background="@drawable/shadow_rect"
-        android:paddingLeft="13dp"
-        android:paddingTop="13dp"
-        android:paddingRight="13dp"
-        android:paddingBottom="13dp"
+        android:text=""
+        android:checked="true"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.094"
+        app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-
-        <TextView
-            android:id="@+id/task_list_salary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/full_price_in_task_label"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/task_box_price_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/zloty_value"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.976" />
 
     <LinearLayout
         android:id="@+id/task_create_wrapper"

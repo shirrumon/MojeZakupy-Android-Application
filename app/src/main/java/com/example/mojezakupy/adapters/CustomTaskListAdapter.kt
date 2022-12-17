@@ -16,21 +16,21 @@ class CustomTaskListAdapter(private val dataSet: List<TaskEntity>) :
         val taskId: TextView
 
         init {
-            textName = view.findViewById(R.id.task_name)
-            taskPrice = view.findViewById(R.id.task_price)
-            taskId = view.findViewById(R.id.task_id)
+            textName = view.findViewById(R.id.task_list_name)
+            taskPrice = view.findViewById(R.id.list_subtitle)
+            taskId = view.findViewById(R.id.task_list_id)
         }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CustomTaskListAdapter.ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.task_element, viewGroup, false)
+            .inflate(R.layout.list_element_layout, viewGroup, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.textName.text = dataSet[position].taskName
-        viewHolder.taskPrice.text = dataSet[position].taskPrice.toString() + " zł"
+        viewHolder.taskPrice.text = "Cena: " + dataSet[position].taskPrice.toString() + " zł"
         viewHolder.taskId.text = dataSet[position].id.toString()
     }
 

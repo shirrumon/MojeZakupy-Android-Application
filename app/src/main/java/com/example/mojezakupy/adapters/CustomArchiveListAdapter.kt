@@ -20,7 +20,7 @@ class CustomArchiveListAdapter(private val dataSet: List<TaskListEntity>, privat
 
         init {
             textView = view.findViewById(R.id.task_list_name)
-            taskCreateDate = view.findViewById(R.id.list_date_of_create)
+            taskCreateDate = view.findViewById(R.id.list_subtitle)
             hiddenId = view.findViewById(R.id.task_list_id)
         }
     }

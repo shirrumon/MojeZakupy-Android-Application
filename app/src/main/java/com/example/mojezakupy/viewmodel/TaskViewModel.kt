@@ -18,6 +18,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
     val summaryPrice: LiveData<String> = appDatabase.taskListDAO().getSummaryPriceAsFlow(listId).asLiveData()
     val countType: LiveData<String> = appDatabase.taskListDAO().getCurrentType(listId).asLiveData()
     val salary: LiveData<Int> = appDatabase.taskListDAO().getSalary(listId).asLiveData()
+    val parentList: LiveData<TaskListEntity> = appDatabase.taskListDAO().getListByIdAsLiveData(listId.toString())
 
     @OptIn(DelicateCoroutinesApi::class)
     fun createTask(

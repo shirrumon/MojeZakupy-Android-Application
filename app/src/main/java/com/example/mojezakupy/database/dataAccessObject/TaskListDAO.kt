@@ -21,6 +21,9 @@ interface TaskListDAO {
     @Query("SELECT * FROM task_list WHERE id = :id")
     fun getListById(id: String): TaskListEntity
 
+    @Query("SELECT * FROM task_list WHERE id = :id")
+    fun getListByIdAsLiveData(id: String): LiveData<TaskListEntity>
+
     @Query("SELECT task_summary FROM task_list WHERE id = :listId")
     fun getSummaryPriceAsFlow(listId: Int): Flow<String>
 

@@ -2,5 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.MojeZakupy" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

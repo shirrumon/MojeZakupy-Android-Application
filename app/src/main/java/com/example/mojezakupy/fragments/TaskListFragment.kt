@@ -20,6 +20,7 @@ import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
@@ -49,6 +50,14 @@ class TaskListFragment(
 
         taskViewModel?.taskList?.observe(viewLifecycleOwner) {
             listFromDb = it
+
+            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
+            if(listFromDb.isEmpty()) {
+                emptyCommunicate.visibility = View.VISIBLE
+            } else {
+                emptyCommunicate.visibility = View.GONE
+            }
+
             currentAdapter = CustomTaskListAdapter(listFromDb)
             recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             recyclerView.adapter = currentAdapter
@@ -182,27 +191,27 @@ class TaskListFragment(
         taskViewModel: TaskViewModel?,
         listId: String,
     ) {
-        val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
-
-
-        view.findViewById<Button>(R.id.create_new_task_button_in_form).setOnClickListener {
-            val taskName: TextView = view.findViewById(R.id.add_new_task_name)
-            val taskPrice: TextView = view.findViewById(R.id.add_new_task_price)
-
-            if(taskName.text.toString().isEmpty() || taskPrice.text.toString().isEmpty()){
-                lifecycleScope.launch {
-                    Toast.makeText(activity, "Pole nie może być puste!",
-                        Toast.LENGTH_LONG).show()
-                }
-            } else {
-                taskViewModel?.createTask(
-                    listId.toInt(),
-                    taskName.text.toString(),
-                    taskPrice.text.toString()
-                )
-                addTaskForm.visibility = View.GONE
-            }
-        }
+//        val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
+//
+//
+//        view.findViewById<Button>(R.id.create_new_task_button_in_form).setOnClickListener {
+//            val taskName: TextView = view.findViewById(R.id.add_new_task_name)
+//            val taskPrice: TextView = view.findViewById(R.id.add_new_task_price)
+//
+//            if(taskName.text.toString().isEmpty() || taskPrice.text.toString().isEmpty()){
+//                lifecycleScope.launch {
+//                    Toast.makeText(activity, "Pole nie może być puste!",
+//                        Toast.LENGTH_LONG).show()
+//                }
+//            } else {
+//                taskViewModel?.createTask(
+//                    listId.toInt(),
+//                    taskName.text.toString(),
+//                    taskPrice.text.toString()
+//                )
+//                addTaskForm.visibility = View.GONE
+//            }
+//        }
 
 //        view.findViewById<TextView>(R.id.task_list_salary).setOnClickListener {
 //            if (view.findViewById<TextView>(R.id.task_list_salary).text.toString() == "Cena razem: ") {
@@ -214,12 +223,12 @@ class TaskListFragment(
 //            }
 //        }
 
-        view.findViewById<Button>(R.id.change_price_button).setOnClickListener {
-            taskViewModel?.changeSalary(listId, view.findViewById<EditText>(R.id.change_price_input).text.toString())
-        }
-
-        view.findViewById<Button>(R.id.close_salary_change_icon).setOnClickListener {
-            view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
-        }
+//        view.findViewById<Button>(R.id.change_price_button).setOnClickListener {
+//            taskViewModel?.changeSalary(listId, view.findViewById<EditText>(R.id.change_price_input).text.toString())
+//        }
+//
+//        view.findViewById<Button>(R.id.close_salary_change_icon).setOnClickListener {
+//            view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
+//        }
     }
 }

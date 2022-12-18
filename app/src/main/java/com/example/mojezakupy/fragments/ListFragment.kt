@@ -20,6 +20,7 @@ import com.example.mojezakupy.adapters.CustomListAdapter
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.ListViewModel
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
@@ -44,8 +45,15 @@ class ListFragment : Fragment() {
         recyclerView.adapter = listAdapterThis
 
         listViewModel?.list?.observe(viewLifecycleOwner) { listEntities ->
-            Log.d("test", "ok")
             listsFromDb = listEntities
+
+            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
+            if(listsFromDb.isEmpty()) {
+                emptyCommunicate.visibility = View.VISIBLE
+            } else {
+                emptyCommunicate.visibility = View.GONE
+            }
+
             listAdapterThis = activity?.let { CustomListAdapter(listsFromDb, it) }
             recyclerView.adapter = listAdapterThis
         }

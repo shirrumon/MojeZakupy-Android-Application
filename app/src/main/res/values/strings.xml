@@ -35,4 +35,5 @@
     <string name="create_product_header">Dodaj produkt</string>
     <string name="product_name_label">Nazwa produktu</string>
     <string name="product_price_label">Cena produktu</string>
+    <string name="empty_list_communicate">Lista jest pusta</string>
 </resources>

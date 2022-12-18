@@ -21,6 +21,7 @@ import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -48,6 +49,14 @@ class ArchiveTaskFragment(
 
         taskViewModel?.taskList?.observe(viewLifecycleOwner) {
             listFromDb = it
+
+            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
+            if(listFromDb.isEmpty()) {
+                emptyCommunicate.visibility = View.VISIBLE
+            } else {
+                emptyCommunicate.visibility = View.GONE
+            }
+
             currentAdapter = CustomTaskListAdapter(listFromDb)
             recyclerView.adapter = currentAdapter
         }
@@ -60,46 +69,6 @@ class ArchiveTaskFragment(
         taskViewModel?.parentList?.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.parent_list_name).text = it.listName
         }
-
-//        if (taskViewModel != null) {
-//            taskViewModel.allTasksAsFlow.observe(viewLifecycleOwner, Observer {
-//                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-//                recyclerView.adapter = CustomTaskListAdapter(it)
-//            })
-//
-//            taskViewModel.summaryPrice.observe(viewLifecycleOwner, Observer {
-//                listsFromDb = taskViewModel?.getAllInstances(listId.toInt())
-//                view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = it
-//            })
-//        }
-
-//        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-//            override fun onMove(
-//                recyclerView: RecyclerView,
-//                viewHolder: RecyclerView.ViewHolder,
-//                target: RecyclerView.ViewHolder
-//            ): Boolean {
-//                return false
-//            }
-//
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                val deletedCourse: TaskEntity? =
-//                    listsFromDb?.get(viewHolder.adapterPosition)
-//
-//                listsFromDb?.get(viewHolder.adapterPosition)?.let { taskViewModel?.delete(it) }
-//
-//                currentAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
-//
-//                if (deletedCourse != null) {
-//                    Snackbar.make(
-//                        recyclerView,
-//                        "Usunąłeś " + deletedCourse.taskName,
-//                        Snackbar.LENGTH_LONG
-//                    ).show()
-//                }
-//            }
-//        }).attachToRecyclerView(recyclerView)
-
         return view
     }
 }

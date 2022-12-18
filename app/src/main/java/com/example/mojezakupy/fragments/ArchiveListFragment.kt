@@ -17,6 +17,7 @@ import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.ListViewModel
+import com.google.android.material.chip.Chip
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class ArchiveListFragment: Fragment() {
@@ -41,6 +42,14 @@ class ArchiveListFragment: Fragment() {
 
         listViewModel?.archiveList?.observe(viewLifecycleOwner) { taskList ->
             listsFromDb = taskList
+
+            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
+            if(listsFromDb.isEmpty()) {
+                emptyCommunicate.visibility = View.VISIBLE
+            } else {
+                emptyCommunicate.visibility = View.GONE
+            }
+
             listAdapterThis = activity?.let { CustomArchiveListAdapter(listsFromDb, it) }
             recyclerView.adapter = listAdapterThis
         }

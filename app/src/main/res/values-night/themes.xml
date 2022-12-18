@@ -3,5 +3,6 @@
     <style name="Theme.MojeZakupy" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">#1C1B1F</item>
         <item name="fontFamily">@font/</item>
+        <item name="navigationIconTint">#fff</item>
     </style>
 </resources>

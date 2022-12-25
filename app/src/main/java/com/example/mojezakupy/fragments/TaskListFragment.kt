@@ -1,16 +1,22 @@
 package com.example.mojezakupy.fragments
 
+import android.Manifest
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.provider.MediaStore
+import android.util.Log
+import android.view.*
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +24,7 @@ import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.factory.SnakeBarFactory
+import com.example.mojezakupy.helpers.TextProcessHelper
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
@@ -25,20 +32,23 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.ml.vision.FirebaseVision
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.coroutines.launch
 
 class TaskListFragment(
     private val listId: String,
     private val tasksSummary: String
     ) : Fragment() {
 
+    private var taskViewModel: Any = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
-        val taskViewModel: TaskViewModel? = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }
+        taskViewModel = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }!!
 
         view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $tasksSummary zł"
 
@@ -48,7 +58,7 @@ class TaskListFragment(
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        taskViewModel?.taskList?.observe(viewLifecycleOwner) {
+        (taskViewModel as TaskViewModel).taskList.observe(viewLifecycleOwner) {
             listFromDb = it
 
             val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
@@ -63,14 +73,14 @@ class TaskListFragment(
             recyclerView.adapter = currentAdapter
         }
 
-        taskViewModel?.countType?.observe(viewLifecycleOwner) {
+        (taskViewModel as TaskViewModel).countType?.observe(viewLifecycleOwner) {
             if(it == "standard") {
-                taskViewModel.summaryPrice.observe(viewLifecycleOwner){ price ->
+                (taskViewModel as TaskViewModel).summaryPrice.observe(viewLifecycleOwner){ price ->
                     //view.findViewById<TextView>(R.id.task_list_salary).text = "Cena razem: "
                     view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $price zł"
                 }
             } else {
-                taskViewModel.salary.observe(viewLifecycleOwner){ salary ->
+                (taskViewModel as TaskViewModel).salary.observe(viewLifecycleOwner){ salary ->
                     //view.findViewById<TextView>(R.id.task_list_salary).text = "Pozostało wypłaty: "
                     view.findViewById<TextView>(R.id.task_box_price_summary).text = "Pozostało: $salary zł"
                 }
@@ -91,7 +101,7 @@ class TaskListFragment(
                 val deletedCourse: TaskEntity =
                     listFromDb[viewHolder.adapterPosition]
 
-                taskViewModel?.delete(listFromDb[viewHolder.adapterPosition])
+                (taskViewModel as TaskViewModel)?.delete(listFromDb[viewHolder.adapterPosition])
 
                 currentAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
@@ -144,7 +154,7 @@ class TaskListFragment(
             fragmentManager?.popBackStack()
         }
 
-        taskViewModel?.parentList?.observe(viewLifecycleOwner) {
+        (taskViewModel as TaskViewModel)?.parentList?.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.parent_list_name).text = it.listName
         }
 
@@ -171,7 +181,7 @@ class TaskListFragment(
                     } else if (inputProductPrice.text.toString().isEmpty()){
                         inputProductPriceWrapper.error = getString(R.string.error_empty_input)
                     } else {
-                        taskViewModel?.createTask(
+                        (taskViewModel as TaskViewModel)?.createTask(
                             listId.toInt(),
                             inputProductName.text.toString(),
                             inputProductPrice.text.toString()
@@ -182,53 +192,75 @@ class TaskListFragment(
             }
         }
 
-        this.setListeners(view, taskViewModel, listId)
+        view.findViewById<FloatingActionButton>(R.id.add_task_by_scan)
+            .setOnClickListener {
+                if (activity?.let { it1 ->
+                        ActivityCompat.checkSelfPermission(
+                            it1,
+                            Manifest.permission.CAMERA
+                        )
+                    } != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(requireActivity(),
+                        arrayOf(Manifest.permission.CAMERA),
+                        101)
+                } else {
+                    pickImageFromGallery()
+                }
+            }
+
         return view
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("test", "a")
+        when(item.itemId){
+            R.id.change_type -> Log.d("test", "a")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setListeners(
-        view: View,
-        taskViewModel: TaskViewModel?,
+        view: View?,
         listId: String,
     ) {
-//        val addTaskForm: LinearLayout = view.findViewById(R.id.task_create_wrapper)
-//
-//
-//        view.findViewById<Button>(R.id.create_new_task_button_in_form).setOnClickListener {
-//            val taskName: TextView = view.findViewById(R.id.add_new_task_name)
-//            val taskPrice: TextView = view.findViewById(R.id.add_new_task_price)
-//
-//            if(taskName.text.toString().isEmpty() || taskPrice.text.toString().isEmpty()){
-//                lifecycleScope.launch {
-//                    Toast.makeText(activity, "Pole nie może być puste!",
-//                        Toast.LENGTH_LONG).show()
-//                }
-//            } else {
-//                taskViewModel?.createTask(
-//                    listId.toInt(),
-//                    taskName.text.toString(),
-//                    taskPrice.text.toString()
-//                )
-//                addTaskForm.visibility = View.GONE
-//            }
-//        }
+        val priceBox = view?.findViewById<TextView>(R.id.task_box_price_summary)
+        if (priceBox?.text.toString() == "Razem: ") {
+            (taskViewModel as TaskViewModel).changeCountType(listId, "price")
+        } else {
+            (taskViewModel as TaskViewModel).changeCountType(listId, "standard")
+        }
+    }
 
-//        view.findViewById<TextView>(R.id.task_list_salary).setOnClickListener {
-//            if (view.findViewById<TextView>(R.id.task_list_salary).text.toString() == "Cena razem: ") {
-//                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.VISIBLE
-//                taskViewModel?.changeCountType(listId, "price")
-//            } else {
-//                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
-//                taskViewModel?.changeCountType(listId, "standard")
-//            }
-//        }
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            recognizeTextFromDevice(imageBitmap)
+        }
+    }
 
-//        view.findViewById<Button>(R.id.change_price_button).setOnClickListener {
-//            taskViewModel?.changeSalary(listId, view.findViewById<EditText>(R.id.change_price_input).text.toString())
-//        }
-//
-//        view.findViewById<Button>(R.id.close_salary_change_icon).setOnClickListener {
-//            view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
-//        }
+    private fun recognizeTextFromDevice(photo: Bitmap?) {
+        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer // Получаем состояние FirebaseVisionTextRecognizer
+        val textImage = FirebaseVisionImage.fromBitmap((photo!!))
+        val textProcessHelper = TextProcessHelper()
+
+        detector.processImage(textImage)
+            .addOnSuccessListener { firebaseVisionText ->
+                Log.d("text from scaner", textProcessHelper.process(firebaseVisionText)[0] + " " + textProcessHelper.process(firebaseVisionText)[1])
+            }
+            .addOnFailureListener {
+                Log.d("error", "error")
+            }
+    }
+
+    private fun pickImageFromGallery() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            startActivityForResult(takePictureIntent, 1)
+        } catch (e: ActivityNotFoundException) {
+            Log.d("error", "error")
+        }
     }
 }

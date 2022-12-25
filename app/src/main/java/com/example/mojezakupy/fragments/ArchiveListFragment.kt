@@ -15,6 +15,7 @@ import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomArchiveListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
+import com.example.mojezakupy.factory.AlertDialogFactory
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.ListViewModel
 import com.google.android.material.chip.Chip
@@ -65,9 +66,9 @@ class ArchiveListFragment: Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val deletedCourse: TaskListEntity =
-                    listsFromDb.get(viewHolder.adapterPosition)
+                    listsFromDb[viewHolder.adapterPosition]
 
-                listViewModel?.delete(listsFromDb.get(viewHolder.adapterPosition))
+                listViewModel?.delete(listsFromDb[viewHolder.adapterPosition])
 
                 listAdapterThis?.notifyItemRemoved(viewHolder.adapterPosition)
 

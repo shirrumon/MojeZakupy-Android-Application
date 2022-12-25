@@ -36,4 +36,8 @@
     <string name="product_name_label">Nazwa produktu</string>
     <string name="product_price_label">Cena produktu</string>
     <string name="empty_list_communicate">Lista jest pusta</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="header_info_graphics">Wykres</string>
+    <string name="header_settings">Ustawienia</string>
 </resources>

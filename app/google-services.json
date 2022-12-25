@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "921213134659",
+    "project_id": "mojezakupy-97c46",
+    "storage_bucket": "mojezakupy-97c46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921213134659:android:df7831467011e29bc871f6",
+        "android_client_info": {
+          "package_name": "com.example.mojezakupy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921213134659-vbpt1ulm43u3ludc49g3gkfa2288uprk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1WQxkH9TF_bWWojXQxpIuGnO6BSna-xU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921213134659-vbpt1ulm43u3ludc49g3gkfa2288uprk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

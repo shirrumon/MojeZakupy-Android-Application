@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.database.entity.TaskListEntity
@@ -32,9 +33,10 @@ class CustomArchiveListAdapter(private val dataSet: List<TaskListEntity>, privat
         view.setOnClickListener{
             val listId = it.findViewById<TextView>(R.id.task_list_id).text.toString()
 
-            val taskListFragment = ArchiveTaskFragment(listId, "30") //hotfix
+            val taskListFragment = ArchiveTaskFragment(listId, "0") //hotfix
             activity.supportFragmentManager
                 .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.fragment_container, taskListFragment)
                 .addToBackStack(null)
                 .commit()

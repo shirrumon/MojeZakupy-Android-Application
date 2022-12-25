@@ -219,7 +219,7 @@ class TaskListFragment(
 //                taskViewModel?.changeCountType(listId, "price")
 //            } else {
 //                view.findViewById<LinearLayout>(R.id.change_price_wrapper).visibility = View.GONE
-//                taskViewModel?.changeCountType(listId, "standard")
+//                taskViewModel?.changeCountType(listId, "standard")sad
 //            }
 //        }
 

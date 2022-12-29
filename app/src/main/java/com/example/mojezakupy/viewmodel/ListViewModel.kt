@@ -28,10 +28,10 @@ class ListViewModel(applicationContext: Context) : ViewModel() {
             null,
             listName,
             0,
-            "0",
+            0.0F,
             false,
             "standard",
-            0,
+            0.0F,
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString(),
             ""
         )

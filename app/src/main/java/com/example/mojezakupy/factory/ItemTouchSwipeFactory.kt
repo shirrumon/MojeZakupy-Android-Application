@@ -10,14 +10,84 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomListAdapter
+import com.example.mojezakupy.adapters.CustomTaskListAdapter
+import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.interfaces.ItemTouchHelper.ItemTouchSwipeInterface
 import com.example.mojezakupy.viewmodel.ListViewModel
+import com.example.mojezakupy.viewmodel.TaskViewModel
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
-    override fun deleteToLeft() {
+    override fun deleteToLeft(
+        listFromDb: MutableList<TaskEntity>,
+        taskViewModel: TaskViewModel?,
+        currentAdapter: CustomTaskListAdapter?,
+        recyclerView: RecyclerView,
+        activity: FragmentActivity?
+    ): ItemTouchHelper {
+        val deleteSwipeHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val deletedCourse: TaskEntity =
+                    listFromDb[viewHolder.adapterPosition]
+
+                (taskViewModel as TaskViewModel).delete(listFromDb[viewHolder.adapterPosition])
+
+                currentAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
+
+                SnakeBarFactory().generateSnakeBar(
+                    recyclerView,
+                    "Usunąłeś",
+                    deletedCourse.taskName,
+                    Gravity.TOP,
+                ).show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                activity?.let {
+                    ContextCompat.getColor(
+                        it.applicationContext,
+                        R.color.delete_swipe_background
+                    )
+                }?.let {
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(
+                            it
+                        )
+                        .addActionIcon(R.drawable.ic_baseline_delete_32)
+                        .addCornerRadius(1, 15)
+                        .create()
+                        .decorate()
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        })
+
+        return deleteSwipeHelper
     }
 
     override fun archiveToLeft(

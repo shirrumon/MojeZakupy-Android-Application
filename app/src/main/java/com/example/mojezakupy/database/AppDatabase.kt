@@ -12,7 +12,7 @@ import com.example.mojezakupy.database.entity.TaskListEntity
 @Database(entities = [
     TaskListEntity::class,
     TaskEntity::class],
-    version = 6
+    version = 7
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun taskListDAO(): TaskListDAO

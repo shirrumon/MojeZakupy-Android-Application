@@ -1,7 +1,5 @@
 package com.example.mojezakupy.helpers;
 
-import android.util.Log;
-
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 
 public class TextProcessHelper {

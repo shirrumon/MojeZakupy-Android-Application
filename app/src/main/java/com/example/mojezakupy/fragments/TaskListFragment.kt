@@ -1,6 +1,7 @@
 package com.example.mojezakupy.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
+import com.example.mojezakupy.factory.ItemTouchSwipeFactory
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.helpers.TextProcessHelper
 import com.example.mojezakupy.viewmodel.TaskViewModel
@@ -43,17 +45,19 @@ class TaskListFragment(
 
     private var taskViewModel: Any = ""
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
         taskViewModel = activity?.let { TaskViewModel(it.applicationContext, listId.toInt()) }!!
+        val deleteSwipeHelper = ItemTouchSwipeFactory()
 
         view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $tasksSummary zł"
 
-        var listFromDb: MutableList<TaskEntity> = arrayListOf()
-        var currentAdapter = CustomTaskListAdapter(listFromDb)
+        var listFromDb: MutableList<TaskEntity>
+        var currentAdapter: CustomTaskListAdapter
 
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -70,94 +74,95 @@ class TaskListFragment(
 
             currentAdapter = CustomTaskListAdapter(listFromDb)
             recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            deleteSwipeHelper.deleteToLeft(
+                it,
+                taskViewModel as TaskViewModel,
+                currentAdapter,
+                recyclerView,
+                activity
+            ).attachToRecyclerView(recyclerView)
+
+            this.changeEnumerationType(taskViewModel as TaskViewModel, view)
+            this.initListeners(view, taskViewModel as TaskViewModel, inflater)
+            this.createDialogProduct(view, inflater)
+
             recyclerView.adapter = currentAdapter
         }
 
-        (taskViewModel as TaskViewModel).countType?.observe(viewLifecycleOwner) {
-            if(it == "standard") {
-                (taskViewModel as TaskViewModel).summaryPrice.observe(viewLifecycleOwner){ price ->
-                    //view.findViewById<TextView>(R.id.task_list_salary).text = "Cena razem: "
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $price zł"
-                }
-            } else {
-                (taskViewModel as TaskViewModel).salary.observe(viewLifecycleOwner){ salary ->
-                    //view.findViewById<TextView>(R.id.task_list_salary).text = "Pozostało wypłaty: "
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Pozostało: $salary zł"
-                }
-            }
-        }
+        (taskViewModel as TaskViewModel).countType
 
+        this.setParentListName(taskViewModel as TaskViewModel, view)
+        this.setAiCameraPermissions(view)
 
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
+        return view
+    }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedCourse: TaskEntity =
-                    listFromDb[viewHolder.adapterPosition]
-
-                (taskViewModel as TaskViewModel)?.delete(listFromDb[viewHolder.adapterPosition])
-
-                currentAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-
-                SnakeBarFactory().generateSnakeBar(
-                    recyclerView,
-                    "Usunąłeś",
-                    deletedCourse.taskName,
-                    Gravity.TOP,
-                ).show()
-            }
-
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                activity?.let {
-                    ContextCompat.getColor(
-                        it.applicationContext,
-                        R.color.delete_swipe_background
-                    )
-                }?.let {
-                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addBackgroundColor(
-                            it
-                        )
-                        .addActionIcon(R.drawable.ic_baseline_delete_32)
-                        .addCornerRadius(1, 15)
-                        .create()
-                        .decorate()
-                }
-                super.onChildDraw(
-                    c,
-                    recyclerView,
-                    viewHolder,
-                    dX,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
-                )
-            }
-        }).attachToRecyclerView(recyclerView)
-
+    private fun initListeners(
+        view: View,
+        taskViewModel: TaskViewModel,
+        inflater: LayoutInflater
+    ) {
         val topBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
         topBar.setOnClickListener{
             fragmentManager?.popBackStack()
         }
 
-        (taskViewModel as TaskViewModel)?.parentList?.observe(viewLifecycleOwner) {
+        topBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.change_type -> {
+                    val priceBox = view.findViewById<TextView>(R.id.task_box_price_summary)
+                    if (priceBox?.text?.split(":")!![0] == "Razem") {
+                        taskViewModel.changeCountType(listId, "price")
+                    } else {
+                        taskViewModel.changeCountType(listId, "standard")
+                    }
+                }
+                R.id.set_salary -> this.startChangeSalaryDialog(inflater)
+            }
+            return@setOnMenuItemClickListener true
+        }
+    }
+
+    private fun startChangeSalaryDialog(
+        inflater: LayoutInflater
+    ) {
+        context?.let { it1 ->
+            val viewOfInput = inflater.inflate(R.layout.change_salary_dialog, null)
+            val dialog = MaterialAlertDialogBuilder(it1)
+                .setTitle(resources.getString(R.string.create_product_header))
+                .setView(viewOfInput)
+                .setNegativeButton(resources.getString(R.string.decline), null)
+                .setPositiveButton(resources.getString(R.string.accept), null)
+                .create()
+
+            dialog.show()
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                val inputProductNameWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
+                val salaryInput = viewOfInput.findViewById<TextInputEditText>(R.id.change_salary_input)
+
+                if(salaryInput.text.toString().isEmpty()){
+                    inputProductNameWrapper.error = getString(R.string.error_empty_input)
+                }  else {
+                    (taskViewModel as TaskViewModel).changeSalary(
+                        listId,
+                        salaryInput.text.toString(),
+                    )
+                    dialog.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun setParentListName(taskViewModel: TaskViewModel, view: View) {
+        taskViewModel.parentList.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.parent_list_name).text = it.listName
         }
+    }
 
+    private fun createDialogProduct(
+        view: View,
+        inflater: LayoutInflater
+    ) {
         view.findViewById<FloatingActionButton>(R.id.add_task_explain_button).setOnClickListener {
             context?.let { it1 ->
                 val viewOfInput = inflater.inflate(R.layout.add_product_input_group, null)
@@ -181,17 +186,19 @@ class TaskListFragment(
                     } else if (inputProductPrice.text.toString().isEmpty()){
                         inputProductPriceWrapper.error = getString(R.string.error_empty_input)
                     } else {
-                        (taskViewModel as TaskViewModel)?.createTask(
+                        (taskViewModel as TaskViewModel).createTask(
                             listId.toInt(),
                             inputProductName.text.toString(),
-                            inputProductPrice.text.toString()
+                            inputProductPrice.text.toString().toFloat()
                         )
                         dialog.dismiss()
                     }
                 }
             }
         }
+    }
 
+    private fun setAiCameraPermissions(view: View) {
         view.findViewById<FloatingActionButton>(R.id.add_task_by_scan)
             .setOnClickListener {
                 if (activity?.let { it1 ->
@@ -205,11 +212,24 @@ class TaskListFragment(
                         arrayOf(Manifest.permission.CAMERA),
                         101)
                 } else {
-                    pickImageFromGallery()
+                    this.pickImageFromGallery()
                 }
             }
+    }
 
-        return view
+    @SuppressLint("SetTextI18n")
+    private fun changeEnumerationType(taskViewModel: TaskViewModel, view: View) {
+        taskViewModel.countType.observe(viewLifecycleOwner) {
+            if(it == "standard") {
+                taskViewModel.summaryPrice.observe(viewLifecycleOwner){ price ->
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $price zł"
+                }
+            } else {
+                taskViewModel.salary.observe(viewLifecycleOwner){ salary ->
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Pozostało: $salary zł"
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -218,18 +238,6 @@ class TaskListFragment(
             R.id.change_type -> Log.d("test", "a")
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun setListeners(
-        view: View?,
-        listId: String,
-    ) {
-        val priceBox = view?.findViewById<TextView>(R.id.task_box_price_summary)
-        if (priceBox?.text.toString() == "Razem: ") {
-            (taskViewModel as TaskViewModel).changeCountType(listId, "price")
-        } else {
-            (taskViewModel as TaskViewModel).changeCountType(listId, "standard")
-        }
     }
 
     @Deprecated("Deprecated in Java")

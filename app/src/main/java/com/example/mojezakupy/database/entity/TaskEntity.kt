@@ -9,5 +9,5 @@ data class TaskEntity(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "list_id") val listId: Int?,
     @ColumnInfo(name = "task_name") val taskName: String?,
-    @ColumnInfo(name = "task_price") val taskPrice: String = "0",
+    @ColumnInfo(name = "task_price") val taskPrice: Float = 0.0F,
 )

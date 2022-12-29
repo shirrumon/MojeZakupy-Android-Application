@@ -35,6 +35,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:7.1.0'
+
     implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
 
     implementation 'androidx.core:core-ktx:1.7.0'

@@ -42,4 +42,5 @@
     <string name="header_settings">Ustawienia</string>
     <string name="scan_product_price">Scanuj cene produktu</string>
     <string name="salary_chang">Wprowadż wypłatę</string>
+    <string name="empty_dataset">Nie ma danych dla wykresu</string>
 </resources>

@@ -49,7 +49,7 @@ class ListFragment : Fragment() {
     }
 
     private fun initAdapterView(view: View?, repository: ListOfTasksRepository) = with(binding) {
-        listAdapter = MainListAdapter()
+        listAdapter = MainListAdapter(requireActivity())
         val recyclerView: RecyclerView = view?.findViewById(R.id.dashboard_recycler)!!
         val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
         recyclerView.layoutManager =

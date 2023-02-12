@@ -2,6 +2,7 @@ package com.example.mojezakupy.factory
 
 import android.graphics.Canvas
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -9,12 +10,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
-import com.example.mojezakupy.adapters.CustomListAdapter
 import com.example.mojezakupy.adapters.CustomTaskListAdapter
+import com.example.mojezakupy.adapters.pagesAdapters.MainListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.interfaces.ItemTouchHelper.ItemTouchSwipeInterface
-import com.example.mojezakupy.viewmodel.ListViewModel
+import com.example.mojezakupy.repository.ListOfTasksRepository
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
@@ -92,12 +93,13 @@ class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
 
     override fun archiveToLeft(
         listsFromDb: MutableList<TaskListEntity>,
-        listViewModel: ListViewModel?,
-        listAdapterThis: CustomListAdapter?,
+        repository: ListOfTasksRepository,
+        listAdapterThis: MainListAdapter,
         recyclerView: RecyclerView,
         activity: FragmentActivity?
     ): ItemTouchHelper {
-        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        Log.e("list init", listsFromDb.size.toString())
+        val obj = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -108,16 +110,20 @@ class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
 
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                Log.e(
+                    "list swipe",
+                    listsFromDb.size.toString() + "pos: ${viewHolder.adapterPosition}"
+                )
                 val deletedCourse: TaskListEntity =
                     listsFromDb[viewHolder.adapterPosition]
 
                 val position = viewHolder.adapterPosition
 
-                listViewModel?.moveToArchive(listsFromDb[viewHolder.adapterPosition])
+                repository.moveToArchive(listsFromDb[viewHolder.adapterPosition])
 
                 listsFromDb.removeAt(viewHolder.adapterPosition)
 
-                listAdapterThis?.notifyItemRemoved(viewHolder.adapterPosition)
+                listAdapterThis.notifyItemRemoved(viewHolder.adapterPosition)
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
@@ -128,8 +134,8 @@ class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
                     "Cofnij"
                 ) {
                     listsFromDb.add(position, deletedCourse)
-                    listViewModel?.removeFromArchive(deletedCourse)
-                    listAdapterThis?.notifyItemInserted(position)
+                    repository.removeFromArchive(deletedCourse)
+                    listAdapterThis.notifyItemInserted(position)
                 }.show()
             }
 
@@ -148,7 +154,15 @@ class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
                         R.color.archive_swipe_background
                     )
                 }?.let {
-                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    RecyclerViewSwipeDecorator.Builder(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
                         .addBackgroundColor(
                             it
                         )
@@ -167,8 +181,8 @@ class ItemTouchSwipeFactory : ItemTouchSwipeInterface {
                     isCurrentlyActive
                 )
             }
-        })
+        }
 
-        return touchHelper
+        return ItemTouchHelper(obj)
     }
 }

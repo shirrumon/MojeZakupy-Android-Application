@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomArchiveListAdapter
-import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.database.entity.TaskListEntity
-import com.example.mojezakupy.factory.AlertDialogFactory
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.viewmodel.ListViewModel
 import com.google.android.material.chip.Chip
@@ -26,6 +24,7 @@ class ArchiveListFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_list_archive, container, false)
         val recyclerView: RecyclerView = view.findViewById(R.id.archive_recycler)
         recyclerView.layoutManager =

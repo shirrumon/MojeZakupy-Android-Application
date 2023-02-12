@@ -1,93 +1,186 @@
 package com.example.mojezakupy.fragments
 
 import android.content.DialogInterface
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
-import com.example.mojezakupy.adapters.CustomListAdapter
+import com.example.mojezakupy.adapters.pagesAdapters.MainListAdapter
 import com.example.mojezakupy.database.entity.TaskListEntity
+import com.example.mojezakupy.databinding.FragmentListBinding
 import com.example.mojezakupy.factory.AlertDialogFactory
 import com.example.mojezakupy.factory.ItemTouchSwipeFactory
-import com.example.mojezakupy.viewmodel.ListViewModel
+import com.example.mojezakupy.factory.SnakeBarFactory
+import com.example.mojezakupy.repository.ListOfTasksRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class ListFragment : Fragment() {
+    private val touchHelper = ItemTouchSwipeFactory()
+    private lateinit var listAdapter: MainListAdapter
+    private lateinit var binding: FragmentListBinding
+    private var db: MutableList<TaskListEntity> = arrayListOf()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        val listViewModel = activity?.let { ListViewModel(it.applicationContext) }
+        val repository = ListOfTasksRepository(requireActivity())
+        binding = FragmentListBinding.inflate(inflater)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.dashboard_recycler)
+        initCreateDialog(view, inflater, repository)
+        initAdapterView(view, repository)
+        return view
+    }
+
+    private fun initAdapterView(view: View?, repository: ListOfTasksRepository) = with(binding) {
+        listAdapter = MainListAdapter()
+        val recyclerView: RecyclerView = view?.findViewById(R.id.dashboard_recycler)!!
+        val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
         recyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = listAdapter
 
-        var listsFromDb: MutableList<TaskListEntity> = arrayListOf()
-        var listAdapterThis = activity?.let { CustomListAdapter(listsFromDb, it) }
-        recyclerView.adapter = listAdapterThis
-
-        listViewModel?.list?.observe(viewLifecycleOwner) { listEntities ->
-            listsFromDb = listEntities
-
-            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
-            if(listsFromDb.isEmpty()) {
+        repository.list.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
                 emptyCommunicate.visibility = View.VISIBLE
             } else {
                 emptyCommunicate.visibility = View.GONE
+                listAdapter.submitList(it)
+                db = it
             }
-
-            listAdapterThis = activity?.let { CustomListAdapter(listsFromDb, it) }
-            recyclerView.adapter = listAdapterThis
-
-            val swipeHelper: ItemTouchHelper = (ItemTouchSwipeFactory::archiveToLeft)(
-                ItemTouchSwipeFactory(),
-                listsFromDb,
-                listViewModel,
-                listAdapterThis,
-                recyclerView,
-                activity
-            )
-
-            swipeHelper.attachToRecyclerView(recyclerView)
         }
 
-        view.findViewById<FloatingActionButton>(R.id.add_list_explain_button).setOnClickListener{
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val deletedCourse: TaskListEntity =
+                    db.get(viewHolder.adapterPosition)
+                val position = viewHolder.adapterPosition
+
+                SnakeBarFactory().generateSnakeBar(
+                    recyclerView,
+                    "Przemisciles do archiwum",
+                    deletedCourse.listName,
+                    Gravity.TOP,
+                ).show()
+                db.removeAt(position)
+                repository.moveToArchive(deletedCourse)
+                listAdapter.notifyItemRemoved(position)
+
+                SnakeBarFactory().generateSnakeBar(
+                    recyclerView,
+                    "Przemisciles do archiwum",
+                    deletedCourse.listName,
+                    Gravity.TOP,
+                ).setAction(
+                    "Cofnij"
+                ) {
+                    db.add(position, deletedCourse)
+                    repository.removeFromArchive(deletedCourse)
+                    listAdapter.notifyItemInserted(position)
+                }.show()
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                activity?.let {
+                    ContextCompat.getColor(
+                        it.applicationContext,
+                        R.color.archive_swipe_background
+                    )
+                }?.let {
+                    RecyclerViewSwipeDecorator.Builder(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                        .addBackgroundColor(
+                            it
+                        )
+                        .addActionIcon(R.drawable.ic_baseline_archive_32)
+                        .addCornerRadius(1, 15)
+                        .create()
+                        .decorate()
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+
+        }).attachToRecyclerView(recyclerView)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initCreateDialog(
+        view: View?,
+        inflater: LayoutInflater,
+        repository: ListOfTasksRepository
+    ) {
+        view?.findViewById<FloatingActionButton>(R.id.add_list_explain_button)?.setOnClickListener {
             val viewOfInput = inflater.inflate(R.layout.create_list_input, null)
             val createAlertDialogFactory = AlertDialogFactory()
             val alertDialog = createAlertDialogFactory.createCreateListDialog(
-                context,
+                requireActivity(),
                 viewOfInput,
                 resources.getString(R.string.create_list_header_dialog),
                 resources.getString(R.string.decline),
                 resources.getString(R.string.accept),
             )
 
-            alertDialog?.show()
-            alertDialog?.getButton(DialogInterface.BUTTON_POSITIVE)?.setOnClickListener {
-                val inputWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_list_wrapper)
+            alertDialog.show()
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                val inputWrapper =
+                    viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_list_wrapper)
                 val input = viewOfInput.findViewById<TextInputEditText>(R.id.list_new_name)
-                if(input.text.toString().isEmpty()){
+                if (input.text.toString().isEmpty()) {
                     inputWrapper.error = getString(R.string.error_empty_input)
                 } else {
-                    listViewModel?.saveNewList(input.text.toString())
+                    repository.saveNewList(input.text.toString())
                     alertDialog.dismiss()
                 }
             }
         }
-
-        return view
     }
 }

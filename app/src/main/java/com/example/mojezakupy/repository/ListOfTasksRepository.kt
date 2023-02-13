@@ -144,10 +144,10 @@ class ListOfTasksRepository(applicationContext: Context) {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun changeSalary(listId: Int, salary: String) {
+    fun changeSalary(listId: Int, salary: Float) {
         GlobalScope.launch(Dispatchers.IO) {
             val taskList = appDatabaseTasks.taskListDAO().getListById(listId)
-            taskList.salary = salary.toFloat()
+            taskList.salary = salary
 
             appDatabaseTasks.taskListDAO().update(taskList)
         }

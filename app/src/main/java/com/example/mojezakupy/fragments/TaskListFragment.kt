@@ -175,7 +175,7 @@ class TaskListFragment : Fragment() {
 
     private fun initListeners(
         view: View,
-        taskViewModel: ListOfTasksRepository,
+        tasksRepository: ListOfTasksRepository,
         inflater: LayoutInflater
     ) {
         view.findViewById<TextView>(R.id.parent_list_name).text = taskParentName
@@ -193,12 +193,12 @@ class TaskListFragment : Fragment() {
                 R.id.change_type -> {
                     val priceBox = view.findViewById<TextView>(R.id.task_box_price_summary)
                     if (priceBox?.text?.split(":")!![0] == "Razem") {
-                        taskViewModel.changeCountType(listId, "price")
+                        tasksRepository.changeCountType(listId, "price")
+                        this.startChangeSalaryDialog(inflater)
                     } else {
-                        taskViewModel.changeCountType(listId, "standard")
+                        tasksRepository.changeCountType(listId, "standard")
                     }
                 }
-                R.id.set_salary -> this.startChangeSalaryDialog(inflater)
             }
             return@setOnMenuItemClickListener true
         }
@@ -207,31 +207,35 @@ class TaskListFragment : Fragment() {
     private fun startChangeSalaryDialog(
         inflater: LayoutInflater
     ) {
-        context?.let { it1 ->
-            val viewOfInput = inflater.inflate(R.layout.change_salary_dialog, null)
-            val dialog = MaterialAlertDialogBuilder(it1)
-                .setTitle(resources.getString(R.string.create_product_header))
-                .setView(viewOfInput)
-                .setNegativeButton(resources.getString(R.string.decline), null)
-                .setPositiveButton(resources.getString(R.string.accept), null)
-                .create()
+        val viewOfInput = inflater.inflate(R.layout.change_salary_dialog, null)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.create_product_header))
+            .setView(viewOfInput)
+            .setNegativeButton(resources.getString(R.string.decline), null)
+            .setPositiveButton(resources.getString(R.string.accept), null)
+            .create()
 
-            dialog.show()
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                val inputProductNameWrapper =
-                    viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
-                val salaryInput =
-                    viewOfInput.findViewById<TextInputEditText>(R.id.change_salary_input)
+        dialog.show()
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            val inputProductNameWrapper =
+                viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
+            val salaryInput =
+                viewOfInput.findViewById<TextInputEditText>(R.id.change_salary_input)
 
-                if (salaryInput.text.toString().isEmpty()) {
-                    inputProductNameWrapper.error = getString(R.string.error_empty_input)
-                } else {
-                    taskRepository.changeSalary(
-                        listId,
-                        salaryInput.text.toString(),
-                    )
-                    dialog.dismiss()
+            if (salaryInput.text.toString().isEmpty()) {
+                inputProductNameWrapper.error = getString(R.string.error_empty_input)
+            } else {
+                var currentSummaryCost = 0.0F
+                taskListEntities.forEach {
+                    currentSummaryCost += it.taskPrice
                 }
+                currentSummaryCost = salaryInput.text.toString().toFloat() - currentSummaryCost
+
+                taskRepository.changeSalary(
+                    listId,
+                    currentSummaryCost,
+                )
+                dialog.dismiss()
             }
         }
     }

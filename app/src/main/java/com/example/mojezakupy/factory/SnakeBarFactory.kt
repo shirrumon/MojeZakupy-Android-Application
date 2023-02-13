@@ -15,7 +15,7 @@ class SnakeBarFactory {
     ): Snackbar {
         val snakeBar = Snackbar.make(
             recyclerView,
-            "$Message $Name",
+            "$Name $Message",
             Snackbar.LENGTH_SHORT
         )
 

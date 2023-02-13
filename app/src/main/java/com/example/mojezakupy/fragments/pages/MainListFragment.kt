@@ -1,5 +1,6 @@
-package com.example.mojezakupy.fragments
+package com.example.mojezakupy.fragments.pages
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Build
@@ -17,9 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.pagesAdapters.MainListAdapter
 import com.example.mojezakupy.database.entity.TaskListEntity
-import com.example.mojezakupy.databinding.FragmentListBinding
+import com.example.mojezakupy.databinding.FragmentMainListBinding
 import com.example.mojezakupy.factory.AlertDialogFactory
-import com.example.mojezakupy.factory.ItemTouchSwipeFactory
 import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.repository.ListOfTasksRepository
 import com.google.android.material.chip.Chip
@@ -29,19 +29,18 @@ import com.google.android.material.textfield.TextInputLayout
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class ListFragment : Fragment() {
-    private val touchHelper = ItemTouchSwipeFactory()
     private lateinit var listAdapter: MainListAdapter
-    private lateinit var binding: FragmentListBinding
-    private var db: MutableList<TaskListEntity> = arrayListOf()
+    private lateinit var binding: FragmentMainListBinding
+    private var taskListEntities: MutableList<TaskListEntity> = arrayListOf()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_main_list, container, false)
         val repository = ListOfTasksRepository(requireActivity())
-        binding = FragmentListBinding.inflate(inflater)
+        binding = FragmentMainListBinding.inflate(inflater)
 
         initCreateDialog(view, inflater, repository)
         initAdapterView(view, repository)
@@ -62,7 +61,7 @@ class ListFragment : Fragment() {
             } else {
                 emptyCommunicate.visibility = View.GONE
                 listAdapter.submitList(it)
-                db = it
+                taskListEntities = it
             }
         }
 
@@ -78,28 +77,28 @@ class ListFragment : Fragment() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val deletedCourse: TaskListEntity =
-                    db.get(viewHolder.adapterPosition)
-                val position = viewHolder.adapterPosition
+                    taskListEntities[viewHolder.absoluteAdapterPosition]
+                val position = viewHolder.absoluteAdapterPosition
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "Przemisciles do archiwum",
+                    "został przeniesiony do archiwum",
                     deletedCourse.listName,
                     Gravity.TOP,
                 ).show()
-                db.removeAt(position)
+                taskListEntities.removeAt(position)
                 repository.moveToArchive(deletedCourse)
                 listAdapter.notifyItemRemoved(position)
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "Przemisciles do archiwum",
+                    "został przeniesiony do archiwum",
                     deletedCourse.listName,
                     Gravity.TOP,
                 ).setAction(
                     "Cofnij"
                 ) {
-                    db.add(position, deletedCourse)
+                    taskListEntities.add(position, deletedCourse)
                     repository.removeFromArchive(deletedCourse)
                     listAdapter.notifyItemInserted(position)
                 }.show()
@@ -152,6 +151,7 @@ class ListFragment : Fragment() {
 
     }
 
+    @SuppressLint("InflateParams")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initCreateDialog(
         view: View?,

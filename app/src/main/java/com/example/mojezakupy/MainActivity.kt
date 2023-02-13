@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import com.example.mojezakupy.database.AppDatabase
-import com.example.mojezakupy.fragments.ListFragment
+import com.example.mojezakupy.fragments.pages.ListFragment
 import com.example.mojezakupy.fragments.ArchiveListFragment
 import com.example.mojezakupy.fragments.InfographicsFragment
 import com.example.mojezakupy.fragments.SettingsFragment

@@ -8,24 +8,19 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.CustomTaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
 import com.example.mojezakupy.factory.ItemTouchSwipeFactory
-import com.example.mojezakupy.factory.SnakeBarFactory
 import com.example.mojezakupy.helpers.TextProcessHelper
 import com.example.mojezakupy.viewmodel.TaskViewModel
 import com.google.android.material.appbar.MaterialToolbar
@@ -36,14 +31,22 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlin.properties.Delegates
 
-class TaskListFragment(
-    private val listId: String,
-    private val tasksSummary: String
-    ) : Fragment() {
+class TaskListFragment : Fragment() {
 
     private var taskViewModel: Any = ""
+    private var listId by Delegates.notNull<Int>()
+    private var tasksSummary by Delegates.notNull<Float>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val bundle = this.arguments
+        if (bundle !== null) {
+            listId = bundle.getInt("listId")
+            tasksSummary = bundle.getFloat("tasksSummary")
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -60,20 +63,22 @@ class TaskListFragment(
         var currentAdapter: CustomTaskListAdapter
 
         val recyclerView: RecyclerView = view.findViewById(R.id.task_recycler)
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         (taskViewModel as TaskViewModel).taskList.observe(viewLifecycleOwner) {
             listFromDb = it
 
             val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
-            if(listFromDb.isEmpty()) {
+            if (listFromDb.isEmpty()) {
                 emptyCommunicate.visibility = View.VISIBLE
             } else {
                 emptyCommunicate.visibility = View.GONE
             }
 
             currentAdapter = CustomTaskListAdapter(listFromDb)
-            recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            recyclerView.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             deleteSwipeHelper.deleteToLeft(
                 it,
                 taskViewModel as TaskViewModel,
@@ -103,7 +108,7 @@ class TaskListFragment(
         inflater: LayoutInflater
     ) {
         val topBar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
-        topBar.setOnClickListener{
+        topBar.setOnClickListener {
             fragmentManager?.popBackStack()
         }
 
@@ -137,12 +142,14 @@ class TaskListFragment(
 
             dialog.show()
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                val inputProductNameWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
-                val salaryInput = viewOfInput.findViewById<TextInputEditText>(R.id.change_salary_input)
+                val inputProductNameWrapper =
+                    viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
+                val salaryInput =
+                    viewOfInput.findViewById<TextInputEditText>(R.id.change_salary_input)
 
-                if(salaryInput.text.toString().isEmpty()){
+                if (salaryInput.text.toString().isEmpty()) {
                     inputProductNameWrapper.error = getString(R.string.error_empty_input)
-                }  else {
+                } else {
                     (taskViewModel as TaskViewModel).changeSalary(
                         listId,
                         salaryInput.text.toString(),
@@ -175,15 +182,19 @@ class TaskListFragment(
 
                 dialog.show()
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                    val inputProductNameWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
-                    val inputProductName = viewOfInput.findViewById<TextInputEditText>(R.id.product_new_name)
+                    val inputProductNameWrapper =
+                        viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_name_wrapper)
+                    val inputProductName =
+                        viewOfInput.findViewById<TextInputEditText>(R.id.product_new_name)
 
-                    val inputProductPriceWrapper = viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_price_wrapper)
-                    val inputProductPrice = viewOfInput.findViewById<TextInputEditText>(R.id.product_price)
+                    val inputProductPriceWrapper =
+                        viewOfInput.findViewById<TextInputLayout>(R.id.dialog_new_product_price_wrapper)
+                    val inputProductPrice =
+                        viewOfInput.findViewById<TextInputEditText>(R.id.product_price)
 
-                    if(inputProductName.text.toString().isEmpty()){
+                    if (inputProductName.text.toString().isEmpty()) {
                         inputProductNameWrapper.error = getString(R.string.error_empty_input)
-                    } else if (inputProductPrice.text.toString().isEmpty()){
+                    } else if (inputProductPrice.text.toString().isEmpty()) {
                         inputProductPriceWrapper.error = getString(R.string.error_empty_input)
                     } else {
                         (taskViewModel as TaskViewModel).createTask(
@@ -208,9 +219,11 @@ class TaskListFragment(
                         )
                     } != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(requireActivity(),
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
                         arrayOf(Manifest.permission.CAMERA),
-                        101)
+                        101
+                    )
                 } else {
                     this.pickImageFromGallery()
                 }
@@ -220,13 +233,15 @@ class TaskListFragment(
     @SuppressLint("SetTextI18n")
     private fun changeEnumerationType(taskViewModel: TaskViewModel, view: View) {
         taskViewModel.countType.observe(viewLifecycleOwner) {
-            if(it == "standard") {
-                taskViewModel.summaryPrice.observe(viewLifecycleOwner){ price ->
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $price zł"
+            if (it == "standard") {
+                taskViewModel.summaryPrice.observe(viewLifecycleOwner) { price ->
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text =
+                        "Razem: $price zł"
                 }
             } else {
-                taskViewModel.salary.observe(viewLifecycleOwner){ salary ->
-                    view.findViewById<TextView>(R.id.task_box_price_summary).text = "Pozostało: $salary zł"
+                taskViewModel.salary.observe(viewLifecycleOwner) { salary ->
+                    view.findViewById<TextView>(R.id.task_box_price_summary).text =
+                        "Pozostało: $salary zł"
                 }
             }
         }
@@ -234,7 +249,7 @@ class TaskListFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d("test", "a")
-        when(item.itemId){
+        when (item.itemId) {
             R.id.change_type -> Log.d("test", "a")
         }
         return super.onOptionsItemSelected(item)
@@ -250,13 +265,19 @@ class TaskListFragment(
     }
 
     private fun recognizeTextFromDevice(photo: Bitmap?) {
-        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer // Получаем состояние FirebaseVisionTextRecognizer
+        val detector =
+            FirebaseVision.getInstance().onDeviceTextRecognizer // Получаем состояние FirebaseVisionTextRecognizer
         val textImage = FirebaseVisionImage.fromBitmap((photo!!))
         val textProcessHelper = TextProcessHelper()
 
         detector.processImage(textImage)
             .addOnSuccessListener { firebaseVisionText ->
-                Log.d("text from scaner", textProcessHelper.process(firebaseVisionText)[0] + " " + textProcessHelper.process(firebaseVisionText)[1])
+                Log.d(
+                    "text from scaner",
+                    textProcessHelper.process(firebaseVisionText)[0] + " " + textProcessHelper.process(
+                        firebaseVisionText
+                    )[1]
+                )
             }
             .addOnFailureListener {
                 Log.d("error", "error")

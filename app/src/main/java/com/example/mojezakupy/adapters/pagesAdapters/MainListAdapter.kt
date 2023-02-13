@@ -1,8 +1,8 @@
 package com.example.mojezakupy.adapters.pagesAdapters
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DiffUtil
@@ -53,11 +53,16 @@ class MainListAdapter(private val activity: FragmentActivity) :
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item)
         holder.itemView.setOnClickListener {
-            val listId = it.findViewById<TextView>(R.id.task_list_id).text.toString()
+            val bundle = Bundle()
+            item.id?.let { id -> bundle.putInt("listId", id) }
+            bundle.putFloat("tasksSummary", item.taskSummary)
 
-            val taskListFragment = TaskListFragment(listId, "0") //hotfix
+            val taskListFragment = TaskListFragment()
+            taskListFragment.arguments = bundle
+
             activity.supportFragmentManager
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

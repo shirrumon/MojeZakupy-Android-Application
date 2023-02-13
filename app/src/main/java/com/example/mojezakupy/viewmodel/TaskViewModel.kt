@@ -39,7 +39,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
         GlobalScope.launch(Dispatchers.IO) {
             appDatabase.tasksDAO().insert(task)
             updateTaskList(
-                listId.toString(),
+                listId,
                 taskPrice,
             )
         }
@@ -47,7 +47,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateTaskList(
-        listId: String,
+        listId: Int,
         taskPrice: Float,
     ) {
         df.roundingMode = RoundingMode.DOWN
@@ -64,7 +64,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateTaskListAfterTaskDelete(
-        listId: String,
+        listId: Int,
         taskPrice: Float,
     ) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -81,7 +81,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
     @OptIn(DelicateCoroutinesApi::class)
     fun delete(task: TaskEntity) {
         this.updateTaskListAfterTaskDelete(
-            task.listId.toString(),
+            task.listId!!,
             task.taskPrice,
         )
         GlobalScope.launch(Dispatchers.IO) {
@@ -90,7 +90,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun changeCountType(listId: String, type: String) {
+    fun changeCountType(listId: Int, type: String) {
         GlobalScope.launch(Dispatchers.IO) {
             val taskList = appDatabase.taskListDAO().getListById(listId)
             taskList.countType = type
@@ -99,7 +99,7 @@ class TaskViewModel(applicationContext: Context, listId: Int) : ViewModel() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun changeSalary(listId: String, salary: String) {
+    fun changeSalary(listId: Int, salary: String) {
         GlobalScope.launch(Dispatchers.IO) {
             val taskList = appDatabase.taskListDAO().getListById(listId)
             taskList.salary = salary.toFloat()

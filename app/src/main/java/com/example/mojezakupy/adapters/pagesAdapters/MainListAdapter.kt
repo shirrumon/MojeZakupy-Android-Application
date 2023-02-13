@@ -21,7 +21,6 @@ class MainListAdapter(private val activity: FragmentActivity) :
         fun bind(taskList: TaskListEntity) = with(binding) {
             taskListName.text = taskList.listName
             listSubtitle.text = taskList.createDate
-            taskListId.text = taskList.id.toString()
         }
 
         companion object {
@@ -59,6 +58,7 @@ class MainListAdapter(private val activity: FragmentActivity) :
             val bundle = Bundle()
             item.id?.let { id -> bundle.putInt("listId", id) }
             bundle.putFloat("tasksSummary", item.taskSummary)
+            bundle.putString("parentListName", item.listName)
 
             val taskListFragment = TaskListFragment()
             taskListFragment.arguments = bundle

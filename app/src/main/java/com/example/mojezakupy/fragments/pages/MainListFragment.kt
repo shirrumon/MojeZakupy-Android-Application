@@ -76,30 +76,30 @@ class ListFragment : Fragment() {
 
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedCourse: TaskListEntity =
+                val deletedList: TaskListEntity =
                     taskListEntities[viewHolder.absoluteAdapterPosition]
                 val position = viewHolder.absoluteAdapterPosition
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
                     "został przeniesiony do archiwum",
-                    deletedCourse.listName,
+                    deletedList.listName,
                     Gravity.TOP,
                 ).show()
                 taskListEntities.removeAt(position)
-                repository.moveToArchive(deletedCourse)
+                repository.moveToArchive(deletedList)
                 listAdapter.notifyItemRemoved(position)
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
                     "został przeniesiony do archiwum",
-                    deletedCourse.listName,
+                    deletedList.listName,
                     Gravity.TOP,
                 ).setAction(
                     "Cofnij"
                 ) {
-                    taskListEntities.add(position, deletedCourse)
-                    repository.removeFromArchive(deletedCourse)
+                    taskListEntities.add(position, deletedList)
+                    repository.removeFromArchive(deletedList)
                     listAdapter.notifyItemInserted(position)
                 }.show()
             }
@@ -148,7 +148,6 @@ class ListFragment : Fragment() {
             }
 
         }).attachToRecyclerView(recyclerView)
-
     }
 
     @SuppressLint("InflateParams")

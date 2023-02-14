@@ -1,4 +1,4 @@
-package com.example.mojezakupy.fragments
+package com.example.mojezakupy.fragments.pages
 
 import android.graphics.Canvas
 import android.os.Bundle
@@ -40,7 +40,7 @@ class ArchiveListFragment: Fragment() {
     }
 
     private fun initAdapterView(view: View?, repository: ListOfTasksRepository) {
-        listAdapter = MainListAdapter(requireActivity())
+        listAdapter = MainListAdapter(requireActivity(), "archive")
         val recyclerView: RecyclerView = view?.findViewById(R.id.archive_recycler)!!
         val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
         recyclerView.layoutManager =

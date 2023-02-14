@@ -11,9 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.databinding.ListElementLayoutBinding
+import com.example.mojezakupy.fragments.subpages.ArchiveTaskFragment
 import com.example.mojezakupy.fragments.subpages.TaskListFragment
 
-class MainListAdapter(private val activity: FragmentActivity) :
+class MainListAdapter(
+    private val activity: FragmentActivity,
+    private val fragmentToStart: String
+    ) :
     ListAdapter<TaskListEntity, MainListAdapter.MainViewHolder>(ItemComparator()) {
 
     class MainViewHolder(private val binding: ListElementLayoutBinding) :
@@ -60,7 +64,7 @@ class MainListAdapter(private val activity: FragmentActivity) :
             bundle.putFloat("tasksSummary", item.taskSummary)
             bundle.putString("parentListName", item.listName)
 
-            val taskListFragment = TaskListFragment()
+            val taskListFragment = if(fragmentToStart == "task") TaskListFragment() else ArchiveTaskFragment()
             taskListFragment.arguments = bundle
 
             activity.supportFragmentManager

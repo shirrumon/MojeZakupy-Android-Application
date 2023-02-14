@@ -12,46 +12,49 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
-import com.example.mojezakupy.adapters.CustomArchiveListAdapter
+import com.example.mojezakupy.adapters.pagesAdapters.MainListAdapter
 import com.example.mojezakupy.database.entity.TaskListEntity
+import com.example.mojezakupy.databinding.FragmentMainListBinding
 import com.example.mojezakupy.factory.SnakeBarFactory
-import com.example.mojezakupy.viewmodel.ListViewModel
+import com.example.mojezakupy.repository.ListOfTasksRepository
 import com.google.android.material.chip.Chip
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 class ArchiveListFragment: Fragment() {
+    private lateinit var listAdapter: MainListAdapter
+    private lateinit var binding: FragmentMainListBinding
+    private var taskListEntities: MutableList<TaskListEntity> = arrayListOf()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_list_archive, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.archive_recycler)
+        val repository = ListOfTasksRepository(requireActivity())
+        binding = FragmentMainListBinding.inflate(inflater)
+
+        initAdapterView(view, repository)
+
+        return view
+    }
+
+    private fun initAdapterView(view: View?, repository: ListOfTasksRepository) {
+        listAdapter = MainListAdapter(requireActivity())
+        val recyclerView: RecyclerView = view?.findViewById(R.id.archive_recycler)!!
+        val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
         recyclerView.layoutManager =
-            LinearLayoutManager(
-                activity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = listAdapter
 
-        val listViewModel = activity?.let { ListViewModel(it.applicationContext) }
-
-        var listsFromDb: MutableList<TaskListEntity> = arrayListOf()
-        var listAdapterThis = activity?.let { CustomArchiveListAdapter(listsFromDb, it) }
-        recyclerView.adapter = listAdapterThis
-
-        listViewModel?.archiveList?.observe(viewLifecycleOwner) { taskList ->
-            listsFromDb = taskList
-
-            val emptyCommunicate = view.findViewById<Chip>(R.id.empty_list_communicate)
-            if(listsFromDb.isEmpty()) {
+        repository.archiveList.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
                 emptyCommunicate.visibility = View.VISIBLE
             } else {
                 emptyCommunicate.visibility = View.GONE
+                listAdapter.submitList(it)
+                taskListEntities = it
             }
-
-            listAdapterThis = activity?.let { CustomArchiveListAdapter(listsFromDb, it) }
-            recyclerView.adapter = listAdapterThis
         }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -64,19 +67,20 @@ class ArchiveListFragment: Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedCourse: TaskListEntity =
-                    listsFromDb[viewHolder.adapterPosition]
-
-                listViewModel?.delete(listsFromDb[viewHolder.adapterPosition])
-
-                listAdapterThis?.notifyItemRemoved(viewHolder.adapterPosition)
+                val deletedList: TaskListEntity =
+                    taskListEntities[viewHolder.absoluteAdapterPosition]
+                val position = viewHolder.absoluteAdapterPosition
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
                     "Usunąłeś",
-                    deletedCourse.listName,
+                    deletedList.listName,
                     Gravity.TOP,
                 ).show()
+
+                taskListEntities.removeAt(position)
+                repository.delete(deletedList)
+                listAdapter.notifyItemRemoved(position)
             }
 
             override fun onChildDraw(
@@ -114,7 +118,5 @@ class ArchiveListFragment: Fragment() {
                 )
             }
         }).attachToRecyclerView(recyclerView)
-
-        return view
     }
 }

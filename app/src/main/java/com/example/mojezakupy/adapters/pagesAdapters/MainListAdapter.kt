@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mojezakupy.R
 import com.example.mojezakupy.database.entity.TaskListEntity
 import com.example.mojezakupy.databinding.ListElementLayoutBinding
-import com.example.mojezakupy.fragments.TaskListFragment
+import com.example.mojezakupy.fragments.subpages.TaskListFragment
 
 class MainListAdapter(private val activity: FragmentActivity) :
     ListAdapter<TaskListEntity, MainListAdapter.MainViewHolder>(ItemComparator()) {

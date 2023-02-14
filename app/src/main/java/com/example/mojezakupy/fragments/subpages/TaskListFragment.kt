@@ -1,4 +1,4 @@
-package com.example.mojezakupy.fragments
+package com.example.mojezakupy.fragments.subpages
 
 import android.annotation.SuppressLint
 import android.app.Activity

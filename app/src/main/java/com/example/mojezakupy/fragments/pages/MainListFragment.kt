@@ -82,7 +82,7 @@ class ListFragment : Fragment() {
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "został przeniesiony do archiwum",
+                    getString(R.string.transported_to_archive),
                     archivedList.listName,
                     Gravity.TOP,
                 ).show()
@@ -92,11 +92,11 @@ class ListFragment : Fragment() {
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "został przeniesiony do archiwum",
+                    getString(R.string.transported_to_archive),
                     archivedList.listName,
                     Gravity.TOP,
                 ).setAction(
-                    "Cofnij"
+                    getString(R.string.cancel_method)
                 ) {
                     taskListEntities.add(position, archivedList)
                     repository.removeFromArchive(archivedList)

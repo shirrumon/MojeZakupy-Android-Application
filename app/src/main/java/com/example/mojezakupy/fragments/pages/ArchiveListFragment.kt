@@ -73,7 +73,7 @@ class ArchiveListFragment: Fragment() {
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "Usunąłeś",
+                    getString(R.string.messages_after_delete),
                     deletedList.listName,
                     Gravity.TOP,
                 ).show()

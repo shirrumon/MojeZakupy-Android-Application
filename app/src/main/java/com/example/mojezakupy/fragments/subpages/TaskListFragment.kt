@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mojezakupy.MainActivity
+import com.example.mojezakupy.MainActivity.Companion.currencyLocalSymbol
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.pagesAdapters.TaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
@@ -45,6 +47,7 @@ class TaskListFragment : Fragment() {
     private lateinit var listAdapter: TaskListAdapter
     private lateinit var binding: FragmentMainListBinding
     private var taskListEntities: MutableList<TaskEntity> = arrayListOf()
+    private lateinit var countTypeFromTask: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +60,14 @@ class TaskListFragment : Fragment() {
         taskRepository = ListOfTasksRepository(requireActivity())
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
-        view.findViewById<TextView>(R.id.task_box_price_summary).text = "Razem: $tasksSummary zł"
+        view.findViewById<TextView>(R.id.task_box_price_summary).text = "${getString(R.string.all_prices_partable_string)} $tasksSummary $currencyLocalSymbol"
 
         binding = FragmentMainListBinding.inflate(inflater)
 
@@ -84,14 +88,18 @@ class TaskListFragment : Fragment() {
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = listAdapter
 
-        repository.taskList(listId).observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
+        repository.taskList(listId).observe(viewLifecycleOwner) { taskEntity ->
+            if (taskEntity.isEmpty()) {
                 emptyCommunicate.visibility = View.VISIBLE
             } else {
                 emptyCommunicate.visibility = View.GONE
-                listAdapter.submitList(it)
-                taskListEntities = it
+                listAdapter.submitList(taskEntity)
+                taskListEntities = taskEntity
             }
+        }
+
+        repository.taskRepositoryGetCountTaskType(listId).observe(viewLifecycleOwner) { countType ->
+            countTypeFromTask = countType
         }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -111,7 +119,7 @@ class TaskListFragment : Fragment() {
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "został przeniesiony do archiwum",
+                    getString(R.string.transported_to_archive),
                     deletedTask.taskName,
                     Gravity.TOP,
                 ).show()
@@ -121,7 +129,7 @@ class TaskListFragment : Fragment() {
 
                 SnakeBarFactory().generateSnakeBar(
                     recyclerView,
-                    "Usunąłeś",
+                    getString(R.string.messages_after_delete),
                     deletedTask.taskName,
                     Gravity.TOP,
                 ).show()
@@ -188,11 +196,10 @@ class TaskListFragment : Fragment() {
             this.pickImageFromGallery()
         }
 
-        topBar.setOnMenuItemClickListener {
-            when (it.itemId) {
+        topBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.change_type -> {
-                    val priceBox = view.findViewById<TextView>(R.id.task_box_price_summary)
-                    if (priceBox?.text?.split(":")!![0] == "Razem") {
+                    if (countTypeFromTask == "standard") {
                         tasksRepository.changeCountType(listId, "price")
                         this.startChangeSalaryDialog(inflater)
                     } else {
@@ -283,18 +290,19 @@ class TaskListFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     private fun changeEnumerationType(taskViewModel: ListOfTasksRepository, view: View) {
-        taskViewModel.countType(listId).observe(viewLifecycleOwner) {
-            if (it == "standard") {
+        taskViewModel.countType(listId).observe(viewLifecycleOwner) { countType ->
+            if (countType == "standard") {
                 taskViewModel.summaryPrice(listId).observe(viewLifecycleOwner) { price ->
                     view.findViewById<TextView>(R.id.task_box_price_summary).text =
-                        "Razem: $price zł"
+                        "${getString(R.string.all_prices_partable_string)} $price $currencyLocalSymbol"
                 }
             } else {
                 taskViewModel.salary(listId).observe(viewLifecycleOwner) { salary ->
                     view.findViewById<TextView>(R.id.task_box_price_summary).text =
-                        "Pozostało: $salary zł"
+                        "${getString(R.string.left_in_task)} $salary $currencyLocalSymbol"
                 }
             }
         }

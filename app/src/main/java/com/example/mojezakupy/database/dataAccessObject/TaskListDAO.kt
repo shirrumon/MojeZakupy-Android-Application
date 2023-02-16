@@ -30,6 +30,9 @@ interface TaskListDAO {
     @Query("SELECT count_type FROM task_list WHERE id = :listId")
     fun getCurrentType(listId: Int): Flow<String>
 
+    @Query("SELECT count_type FROM task_list WHERE id = :listId")
+    fun getCurrentTypeAsLiveData(listId: Int): LiveData<String>
+
     @Query("SELECT salary FROM task_list WHERE id = :listId")
     fun getSalary(listId: Int): Flow<Float>
 

@@ -11,6 +11,7 @@ import com.example.mojezakupy.database.entity.TaskListEntity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -171,5 +172,9 @@ class ListOfTasksRepository(applicationContext: Context) {
 
     fun parentList(listId: Int): LiveData<TaskListEntity> {
         return appDatabaseTasks.taskListDAO().getListByIdAsLiveData(listId.toString())
+    }
+
+    fun taskRepositoryGetCountTaskType(listId: Int): LiveData<String> {
+        return appDatabase.taskListDAO().getCurrentTypeAsLiveData(listId)
     }
 }

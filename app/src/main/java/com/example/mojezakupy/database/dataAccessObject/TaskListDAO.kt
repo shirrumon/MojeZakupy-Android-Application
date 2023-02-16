@@ -1,6 +1,5 @@
 package com.example.mojezakupy.database.dataAccessObject
 
-import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
@@ -20,7 +19,7 @@ interface TaskListDAO {
     fun getArchiveList(): LiveData<MutableList<TaskListEntity>>
 
     @Query("SELECT * FROM task_list WHERE id = :id")
-    fun getListById(id: String): TaskListEntity
+    fun getListById(id: Int): TaskListEntity
 
     @Query("SELECT * FROM task_list WHERE id = :id")
     fun getListByIdAsLiveData(id: String): LiveData<TaskListEntity>

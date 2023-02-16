@@ -4,14 +4,7 @@
 
     <item
         android:id="@+id/change_type"
-        android:title="@string/from_salary"
         android:contentDescription="@string/from_salary"
+        android:title="@string/from_salary"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/set_salary"
-        android:title="@string/set_salary"
-        android:contentDescription="@string/set_salary"
-        app:showAsAction="never" />
-
 </menu>

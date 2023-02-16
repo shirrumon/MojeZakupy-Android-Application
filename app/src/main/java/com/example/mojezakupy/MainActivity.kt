@@ -1,12 +1,15 @@
 package com.example.mojezakupy
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import com.example.mojezakupy.database.AppDatabase
-import com.example.mojezakupy.fragments.ListFragment
-import com.example.mojezakupy.fragments.ArchiveListFragment
+import com.example.mojezakupy.fragments.pages.ListFragment
+import com.example.mojezakupy.fragments.pages.ArchiveListFragment
 import com.example.mojezakupy.fragments.InfographicsFragment
 import com.example.mojezakupy.fragments.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,6 +36,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_setting_page -> replaceFragment(settingsFragment)
             }
             true
+        }
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                101
+            )
         }
     }
 

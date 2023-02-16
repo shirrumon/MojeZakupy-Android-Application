@@ -18,16 +18,21 @@ class InfographicsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_infographics, container, false)
-        val aaChartView = view.findViewById<AAChartView>(R.id.aa_chart_view)
-        val infoGraphicsViewModel = context?.let { InfoGraphicsViewModel(it) }
+    ): View {
+        return inflater.inflate(R.layout.fragment_infographics, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val aaChartView = view?.findViewById<AAChartView>(R.id.aa_chart_view)
+        val infoGraphicsViewModel = InfoGraphicsViewModel(requireContext())
 
         val aaChartModel : AAChartModel = AAChartModel()
             .chartType(AAChartType.Pie)
             .dataLabelsEnabled(true)
+            .backgroundColor(R.color.black)
 
-        infoGraphicsViewModel?.allProductsFromLastMonth?.observe(viewLifecycleOwner) { data ->
+        infoGraphicsViewModel.allProductsFromLastMonth.observe(viewLifecycleOwner) { data ->
             val dataSetHelper = GetDataSetFromTask()
             val dataSet = dataSetHelper.getDataSetOfPopularProducts(data)
             aaChartModel.series(arrayOf(
@@ -35,13 +40,11 @@ class InfographicsFragment : Fragment() {
                     .data(dataSet)))
 
             if(dataSet.isEmpty()){
-                view.findViewById<Chip>(R.id.empty_data_communicate).visibility = View.VISIBLE
+                view?.findViewById<Chip>(R.id.empty_data_communicate)?.visibility = View.VISIBLE
             } else {
-                view.findViewById<Chip>(R.id.empty_data_communicate).visibility = View.GONE
-                aaChartView.aa_drawChartWithChartModel(aaChartModel)
+                view?.findViewById<Chip>(R.id.empty_data_communicate)?.visibility = View.GONE
+                aaChartView?.aa_drawChartWithChartModel(aaChartModel)
             }
         }
-
-        return view
     }
 }

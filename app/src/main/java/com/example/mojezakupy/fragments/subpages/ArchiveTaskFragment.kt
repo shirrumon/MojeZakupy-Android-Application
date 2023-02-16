@@ -1,14 +1,18 @@
 package com.example.mojezakupy.fragments.subpages
 
 import android.annotation.SuppressLint
+import android.icu.text.NumberFormat
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mojezakupy.MainActivity.Companion.currencyLocalSymbol
 import com.example.mojezakupy.R
 import com.example.mojezakupy.adapters.pagesAdapters.TaskListAdapter
 import com.example.mojezakupy.database.entity.TaskEntity
@@ -16,6 +20,7 @@ import com.example.mojezakupy.databinding.FragmentMainListBinding
 import com.example.mojezakupy.repository.ListOfTasksRepository
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
+import java.util.*
 import kotlin.properties.Delegates
 
 class ArchiveTaskFragment : Fragment() {
@@ -40,12 +45,13 @@ class ArchiveTaskFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_task_archive, container, false)
-        view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = "Razem: $tasksSummary zł"
+        view.findViewById<TextView>(R.id.task_box_price_summary_archive).text = "${getString(R.string.all_prices_partable_string)} $tasksSummary $currencyLocalSymbol"
 
         binding = FragmentMainListBinding.inflate(inflater)
 

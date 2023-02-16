@@ -1,9 +1,13 @@
 package com.example.mojezakupy
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.icu.text.NumberFormat
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
@@ -13,6 +17,7 @@ import com.example.mojezakupy.fragments.pages.ArchiveListFragment
 import com.example.mojezakupy.fragments.InfographicsFragment
 import com.example.mojezakupy.fragments.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val listFragment = ListFragment()
@@ -21,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private val settingsFragment = SettingsFragment()
     private lateinit var appDatabase: AppDatabase
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,5 +58,11 @@ class MainActivity : AppCompatActivity() {
         transaction.setTransition(TRANSIT_FRAGMENT_FADE)
         transaction.replace(R.id.fragment_container, fragment)
         transaction.commit()
+    }
+
+    companion object {
+        @SuppressLint("ConstantLocale")
+        @RequiresApi(Build.VERSION_CODES.N)
+        val currencyLocalSymbol = NumberFormat.getCurrencyInstance(Locale.getDefault()).currency?.symbol.toString()
     }
 }

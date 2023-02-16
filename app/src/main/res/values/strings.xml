@@ -2,26 +2,13 @@
     <string name="app_name">MojeZakupy</string>
     <string name="dashboard">Lista</string>
     <string name="add_list">Dodaj listę</string>
-    <string name="new_list_placeholder">Nowa lista</string>
     <string name="archive">Archiwium</string>
     <string name="infographics">Wykres</string>
     <string name="app_settings">Ustawienia</string>
-    <string name="add_list_top_input_text">Stwórz nową listę zakupów</string>
-    <string name="new_task_product_name">Nazwa produktu</string>
-    <string name="task_salary">Wypłata do wylicznia</string>
-    <string name="new_task_product_price">Cena produktu</string>
-    <string name="add_new_task_button_text">Dodaj</string>
     <string name="close">Zamknij</string>
-    <string name="full_price_in_task_label">Cena razem: </string>
-    <string name="zloty_value">zł</string>
-    <string name="add_button">Dodaj</string>
     <string name="example_list_name">Testowa nazwa listy</string>
-    <string name="example_task_count">13 taskow</string>
     <string name="list_elem_full_price">Cena razem:</string>
-    <string name="example_list_price">20</string>
-    <string name="example_list_id">id</string>
-    <string name="example_task_name">Testowa nazwa taska</string>
-    <string name="example_price">13 zł</string>
+    <string name="example_list_id" translatable="false">id</string>
     <string name="header_list_of_products">Lista zakupów</string>
     <string name="cancel">Wstecz</string>
     <string name="decline">Odmów</string>
@@ -31,16 +18,19 @@
     <string name="error_empty_input">Pole nie może być puste</string>
     <string name="header_list_of_archive">Archiwum</string>
     <string name="from_salary">Wyliczenie z wypłaty</string>
-    <string name="set_salary">Ustaw wypłate</string>
     <string name="create_product_header">Dodaj produkt</string>
     <string name="product_name_label">Nazwa produktu</string>
     <string name="product_price_label">Cena produktu</string>
     <string name="empty_list_communicate">Lista jest pusta</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="header_info_graphics">Wykres</string>
     <string name="header_settings">Ustawienia</string>
     <string name="scan_product_price">Scanuj cene produktu</string>
     <string name="salary_chang">Wprowadż wypłatę</string>
     <string name="empty_dataset">Nie ma danych dla wykresu</string>
+    <string name="messages_after_delete">Usunąłeś</string>
+    <string name="transported_to_archive">został przeniesiony do archiwum</string>
+    <string name="cancel_method">Cofnij</string>
+    <string name="all_prices_partable_string">Razem:</string>
+    <string name="left_in_task">Pozostało:</string>
+    <string name="app_version">Wersja aplikacji: 0.0.1 - Alfa</string>
 </resources>

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/ic_dashboard"
-        android:icon="@drawable/ic_outline_circle_14"
+        android:icon="@drawable/ic_123"
         android:enabled="true"
         android:title="@string/dashboard"
         android:fontFamily="@font/roboto_medium"/>

@@ -33,18 +33,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_dashboard -> replaceFragment(listFragment)
                 R.id.ic_list_archive -> replaceFragment(archiveListFragment)
                 R.id.ic_list_infographics -> replaceFragment(infoGraphicsFragment)
-                R.id.ic_setting_page -> replaceFragment(settingsFragment)
+//                R.id.ic_setting_page -> replaceFragment(settingsFragment)
             }
             true
         }
 
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA),
-                101
-            )
-        }
+//        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                this,
+//                arrayOf(Manifest.permission.CAMERA),
+//                101
+//            )
+//        }
     }
 
     private fun replaceFragment(fragment: Fragment) {

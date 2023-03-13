@@ -21,10 +21,10 @@
         android:title="@string/infographics"
         android:fontFamily="@font/roboto_medium"/>
 
-    <item
-        android:id="@+id/ic_setting_page"
-        android:icon="@drawable/ic_outline_settings_14"
-        android:enabled="true"
-        android:title="@string/app_settings"
-        android:fontFamily="@font/roboto_medium"/>
+<!--    <item-->
+<!--        android:id="@+id/ic_setting_page"-->
+<!--        android:icon="@drawable/ic_outline_settings_14"-->
+<!--        android:enabled="true"-->
+<!--        android:title="@string/app_settings"-->
+<!--        android:fontFamily="@font/roboto_medium"/>-->
 </menu>

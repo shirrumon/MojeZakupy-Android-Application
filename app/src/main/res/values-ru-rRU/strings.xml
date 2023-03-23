@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">МоиПокупки</string>
+    <string name="dashboard">Список</string>
+    <string name="add_list">Создать новый список</string>
+    <string name="new_list_placeholder">Новый список</string>
+    <string name="archive">Архив</string>
+    <string name="infographics">Диаграмма</string>
+    <string name="app_settings">Настройки</string>
+    <string name="add_list_top_input_text">Создать новый список покупок</string>
+    <string name="new_task_product_name">Название продукта</string>
+    <string name="task_salary">Вычет с зарплаты</string>
+    <string name="new_task_product_price">Цена продукта</string>
+    <string name="add_new_task_button_text">Добавление</string>
+    <string name="close">Закрыть</string>
+    <string name="full_price_in_task_label">"Итоговая цена: "</string>
+    <string name="zloty_value">zł</string>
+    <string name="add_button">Добавление</string>
+    <string name="example_list_name">Testowa nazwa listy</string>
+    <string name="example_task_count">13 taskow</string>
+    <string name="list_elem_full_price">"Итоговая цена: "</string>
+    <string name="example_list_price">20</string>
+    <string name="example_list_id">id</string>
+    <string name="example_task_name">Testowa nazwa taska</string>
+    <string name="example_price">13 zł</string>
+    <string name="header_list_of_products">Список покупок</string>
+    <string name="cancel">Назад</string>
+    <string name="decline">Oтменить</string>
+    <string name="accept">Готовo</string>
+    <string name="create_list_header_dialog">Создать список</string>
+    <string name="list_name_hint">Имя списка</string>
+    <string name="error_empty_input">Поле не может быть пустым</string>
+    <string name="header_list_of_archive">Архив</string>
+    <string name="from_salary">Вычет с зарплаты</string>
+    <string name="set_salary">Вычет с зарплаты</string>
+    <string name="create_product_header">Добавить продукт</string>
+    <string name="product_name_label">Наименование товара</string>
+    <string name="product_price_label">Цена продукта</string>
+    <string name="empty_list_communicate">Список пуст</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="header_info_graphics">Диаграмма</string>
+    <string name="header_settings">Настройки</string>
+    <string name="scan_product_price">Сканировать цену продукта</string>
+    <string name="salary_chang">Введите выплату</string>
+    <string name="empty_dataset">Hет данных для диаграммы</string>
+</resources>

@@ -17,8 +17,9 @@
 
         android:supportsRtl="true"
         android:theme="@style/Theme.MojeZakupy"
-        tools:targetApi="31"
-        android:icon="@mipmap/ic_launcher">
+        tools:targetApi="tiramisu"
+        android:icon="@mipmap/ic_launcher"
+        android:localeConfig="@xml/locales_config">
         <activity
             android:name="com.mainApp.mojezakupy.MainActivity"
             android:exported="true">

@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.mojezakupy"
+        applicationId "com.mainApp.mojezakupy"
         minSdk 23
         targetSdk 33
         versionCode 1
@@ -35,7 +35,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    namespace 'com.example.mojezakupy'
+    namespace 'com.mainApp.mojezakupy'
 }
 
 dependencies {
